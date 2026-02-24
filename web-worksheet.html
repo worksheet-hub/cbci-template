@@ -830,6 +830,73 @@
     .info-item { border-right: none !important; }
   }
 
+  /* ===== 태블릿 분할 화면 (≤600px) ===== */
+  @media (max-width: 600px) {
+    /* 컨테이너 */
+    .worksheet-container { padding: 10px; margin: 6px; }
+
+    /* 툴바 컴팩트 */
+    .toolbar { padding: 6px 10px; }
+    .toolbar-left { font-size: 9pt; gap: 6px; }
+    .logo-icon { width: 26px; height: 26px; font-size: 11pt; border-radius: 6px; }
+    .tb-btn { padding: 5px 8px; font-size: 8pt; }
+
+    /* 문서 헤더 */
+    .doc-header h1 { font-size: 14pt; }
+    .doc-header .meta-info { font-size: 8.5pt; }
+
+    /* 단계 헤더 */
+    .stage-header { padding: 10px; gap: 10px; }
+    .stage-badge { width: 36px; height: 36px; font-size: 9pt; }
+    .stage-title { font-size: 13pt; }
+
+    /* 소제목 */
+    .sub-header { padding: 6px 10px; }
+    .sub-num { width: 22px; height: 22px; font-size: 7.5pt; }
+    .sub-title { font-size: 10pt; }
+
+    /* 테이블 */
+    table { font-size: 8.5pt; }
+    th { font-size: 8pt; padding: 5px 4px; }
+    td textarea { font-size: 8.5pt; padding: 5px 6px; min-height: 38px; line-height: 1.55; }
+
+    /* 테이블 스크롤 min-width 축소 */
+    .table-scroll table { min-width: 500px; }
+
+    /* 학습흐름 5열 테이블 비율 조정 */
+    #flowTable th:first-child,
+    #flowTable td:first-child { width: 7%; }
+    #flowTable th:nth-child(5),
+    #flowTable td:nth-child(5) { width: 8%; }
+
+    /* 힌트/팁 */
+    .hint-box, .ai-tip { font-size: 8pt; padding: 8px 10px; }
+    .desc-text { font-size: 8.5pt; margin: 4px 0; }
+
+    /* 개념 렌즈 등 */
+    .concept-badge { font-size: 8pt; padding: 4px 10px; }
+    .concept-info td { font-size: 8pt; }
+    .lens-td textarea { min-height: 44px; }
+
+    /* GRASPS/WHERETO */
+    .grasps-letter, .whereto-letter { font-size: 11pt; padding: 4px 8px; }
+    .grasps-meaning, .whereto-meaning { font-size: 8pt; padding: 4px 6px; }
+
+    /* 예시 패널 */
+    .example-toggle { padding: 10px 14px; }
+    .example-toggle-left span:first-child { font-size: 12pt; }
+    .example-inner { padding: 10px; }
+    .example-inner table { font-size: 8pt; }
+    .example-inner th, .example-inner td { padding: 4px 5px; }
+
+    /* 행 추가 버튼 */
+    .add-row-btn { font-size: 8pt; padding: 6px 14px; }
+
+    /* 행 액션 버튼 */
+    .row-actions { right: -28px; }
+    .row-act-btn { width: 18px; height: 18px; font-size: 10px; }
+  }
+
   /* ===== Example Panel ===== */
   .example-banner {
     background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
