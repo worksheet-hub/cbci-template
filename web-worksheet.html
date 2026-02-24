@@ -541,12 +541,15 @@
     background: var(--blue-light);
   }
   /* ===== Row Action Buttons ===== */
+  .row-actions-wrap {
+    overflow: visible;
+  }
   .row-actions-wrap tbody td:last-child {
     position: relative;
   }
   .row-actions {
     position: absolute;
-    right: 4px;
+    right: -32px;
     top: 50%;
     transform: translateY(-50%);
     display: flex;
@@ -557,7 +560,8 @@
     transition: opacity 0.15s ease;
     z-index: 10;
   }
-  .row-actions-wrap tbody tr:hover .row-actions,
+  /* JS가 .row-hover 토글 (PC), 터치가 .row-active 토글 (모바일) */
+  .row-actions-wrap tbody tr.row-hover .row-actions,
   .row-actions-wrap tbody tr.row-active .row-actions {
     opacity: 1;
     pointer-events: auto;
@@ -2235,7 +2239,60 @@ function initRowActions() {
   });
 }
 
-// Mobile touch support: toggle row-active class
+// === PC: JS hover with delayed hide ===
+// CSS :hover 대신 JS로 관리하여 absolute 버튼으로 이동 시에도 유지
+(function() {
+  let hoverRow = null;
+  let hideTimer = null;
+
+  function showActions(tr) {
+    if (hoverRow && hoverRow !== tr) hoverRow.classList.remove('row-hover');
+    clearTimeout(hideTimer);
+    tr.classList.add('row-hover');
+    hoverRow = tr;
+  }
+
+  function scheduleHide() {
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(function() {
+      if (hoverRow) { hoverRow.classList.remove('row-hover'); hoverRow = null; }
+    }, 250);
+  }
+
+  // 이벤트 위임: 테이블 tbody 단위
+  document.querySelectorAll('.row-actions-wrap tbody').forEach(function(tbody) {
+    tbody.addEventListener('mouseenter', function(e) {
+      var tr = e.target.closest ? e.target.closest('tr') : null;
+      if (tr && tbody.contains(tr)) showActions(tr);
+    }, true);
+
+    tbody.addEventListener('mouseover', function(e) {
+      var tr = e.target.closest ? e.target.closest('tr') : null;
+      if (tr && tbody.contains(tr)) showActions(tr);
+    });
+
+    tbody.addEventListener('mouseleave', function() {
+      scheduleHide();
+    });
+  });
+
+  // row-actions 버튼 영역에 마우스 진입하면 숨기기 취소
+  document.addEventListener('mouseover', function(e) {
+    if (e.target.closest && e.target.closest('.row-actions')) {
+      clearTimeout(hideTimer);
+    }
+  });
+  document.addEventListener('mouseout', function(e) {
+    if (e.target.closest && e.target.closest('.row-actions')) {
+      var related = e.relatedTarget;
+      if (!related || !related.closest || !related.closest('.row-actions')) {
+        scheduleHide();
+      }
+    }
+  });
+})();
+
+// === Mobile: touch toggle row-active ===
 let activeRow = null;
 document.addEventListener('touchstart', function(e) {
   const tr = e.target.closest('.row-actions-wrap tbody tr');
