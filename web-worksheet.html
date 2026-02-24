@@ -804,6 +804,17 @@
     opacity: 1;
   }
 
+  /* ===== Table scroll wrapper (모바일 가로 스크롤) ===== */
+  .table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 8px 0;
+  }
+  .table-scroll table {
+    margin: 0;
+    min-width: 640px;
+  }
+
   /* ===== Responsive ===== */
   @media (max-width: 900px) {
     .worksheet-container { padding: 20px; margin: 12px; border-radius: var(--radius-md); }
@@ -1501,6 +1512,7 @@
     <span class="sub-title">루브릭</span>
   </div>
 
+  <div class="table-scroll">
   <table class="t-s2 row-actions-wrap" id="rubricTable">
     <thead>
       <tr>
@@ -1531,6 +1543,7 @@
       </tr>
     </tbody>
   </table>
+  </div><!-- /.table-scroll -->
   <div class="table-actions no-print">
     <button class="add-row-btn" onclick="addRow('rubricBody', ['rubric-item','rubric-good','rubric-avg','rubric-low'], 4)">+ 평가 요소 추가</button>
   </div>
@@ -1552,6 +1565,7 @@
   </div>
   <p class="desc-text">스트랜드별 주요 활동과 안내 질문을 기록하세요.</p>
 
+  <div class="table-scroll">
   <table class="t-s3 row-actions-wrap" id="flowTable">
     <thead>
       <tr>
@@ -1600,6 +1614,7 @@
       </tr>
     </tbody>
   </table>
+  </div><!-- /.table-scroll -->
   <div class="table-actions no-print">
     <button class="add-row-btn" onclick="addFlowRow()">+ 차시 행 추가</button>
   </div>
@@ -1615,6 +1630,7 @@
   </div>
   <p class="desc-text">학습 경험이 아래 7가지 요소를 충족하는지 점검하세요.</p>
 
+  <div class="table-scroll">
   <table class="t-s3">
     <thead>
       <tr>
@@ -1669,6 +1685,7 @@
       </tr>
     </tbody>
   </table>
+  </div><!-- /.table-scroll -->
   <div class="hint-box">💡 WHERETO는 위긴스와 맥타이의 '이해중심교육과정(UbD)' 3단계에서 학습 경험을 설계·점검하는 틀입니다.</div>
 
   <!-- ===== KPT ===== -->
