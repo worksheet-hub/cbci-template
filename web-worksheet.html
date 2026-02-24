@@ -540,26 +540,79 @@
     color: var(--blue);
     background: var(--blue-light);
   }
-  .remove-row-btn {
+  /* ===== Row Action Buttons ===== */
+  .row-actions-wrap {
+    position: relative;
+  }
+  .row-actions-wrap tbody tr {
+    position: relative;
+  }
+  .row-actions {
     position: absolute;
-    right: -28px;
+    right: -36px;
     top: 50%;
     transform: translateY(-50%);
-    width: 22px; height: 22px;
-    border: none;
-    border-radius: 50%;
-    background: #fee2e2;
-    color: #e03131;
-    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+    z-index: 10;
+  }
+  .row-actions-wrap tbody tr:hover .row-actions,
+  .row-actions-wrap tbody tr.row-active .row-actions {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .row-act-btn {
+    width: 24px; height: 24px;
+    border: 1px solid var(--gray-300);
+    border-radius: 5px;
+    background: #fff;
+    color: var(--gray-600);
+    font-size: 13px;
     cursor: pointer;
-    display: none;
+    display: flex;
     align-items: center;
     justify-content: center;
     transition: var(--transition);
+    padding: 0;
+    line-height: 1;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
   }
-  .remove-row-btn:hover { background: #fca5a5; }
-  tr:hover .remove-row-btn { display: inline-flex; }
-  tr { position: relative; }
+  .row-act-btn:hover {
+    background: var(--blue-light);
+    border-color: var(--blue);
+    color: var(--blue);
+  }
+  .row-act-btn.act-delete:hover {
+    background: #fee2e2;
+    border-color: #e03131;
+    color: #e03131;
+  }
+  .row-act-btn.act-insert:hover {
+    background: #e6f4ee;
+    border-color: var(--green);
+    color: var(--green);
+  }
+  .row-act-btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+    pointer-events: none;
+  }
+  @media (max-width: 900px) {
+    .row-actions {
+      right: -30px;
+    }
+    .row-act-btn {
+      width: 22px; height: 22px;
+      font-size: 11px;
+    }
+  }
+  @media print {
+    .row-actions { display: none !important; }
+  }
 
   /* ===== Description text ===== */
   .desc-text {
@@ -1204,7 +1257,7 @@
     <span class="sub-title" style="color:var(--blue-dark);">📋 기본 정보</span>
   </div>
 
-  <table class="t-s1" id="basicInfoTable">
+  <table class="t-s1 row-actions-wrap" id="basicInfoTable">
     <thead>
       <tr>
         <th style="width:14%">교과</th>
@@ -1274,7 +1327,7 @@
   </div>
   <p class="desc-text">각 참여 교과의 핵심 아이디어와 내용요소를 교과별로 분해합니다.</p>
 
-  <table class="t-s1" id="curriculumTable">
+  <table class="t-s1 row-actions-wrap" id="curriculumTable">
     <thead>
       <tr>
         <th style="width:11%">교과</th>
@@ -1346,7 +1399,7 @@
     <span class="sub-title">스트랜드별 하위 아이디어 + 안내 질문</span>
   </div>
 
-  <table class="t-s1" id="strandTable">
+  <table class="t-s1 row-actions-wrap" id="strandTable">
     <thead>
       <tr>
         <th style="width:20%">스트랜드</th>
@@ -1450,7 +1503,7 @@
     <span class="sub-title">루브릭</span>
   </div>
 
-  <table class="t-s2" id="rubricTable">
+  <table class="t-s2 row-actions-wrap" id="rubricTable">
     <thead>
       <tr>
         <th style="width:34%">평가 요소</th>
@@ -1501,7 +1554,7 @@
   </div>
   <p class="desc-text">스트랜드별 주요 활동과 안내 질문을 기록하세요.</p>
 
-  <table class="t-s3" id="flowTable">
+  <table class="t-s3 row-actions-wrap" id="flowTable">
     <thead>
       <tr>
         <th style="width:9%">차시</th>
@@ -1877,8 +1930,8 @@ function downloadHTML() {
   // Clone the document
   const clone = document.documentElement.cloneNode(true);
 
-  // Remove toolbar and no-print elements from clone
-  clone.querySelectorAll('.toolbar, .no-print, .toast').forEach(el => el.remove());
+  // Remove toolbar, no-print elements, and row action buttons from clone
+  clone.querySelectorAll('.toolbar, .no-print, .toast, .row-actions').forEach(el => el.remove());
 
   // Replace textareas with their values as styled divs
   clone.querySelectorAll('textarea').forEach(ta => {
@@ -1964,10 +2017,283 @@ function printBlankPDF() {
   showToast('인쇄용 빈 양식을 불러오는 중...');
 }
 
+// ===== Row Actions System =====
+let rowIdCounter = Date.now();
+function uid() { return 'r' + (rowIdCounter++); }
+
+// Table config: defines how to create a new row for each table type
+const TABLE_CONFIG = {
+  basicInfoBody: {
+    prefixes: ['subject','code','content','hours'],
+    create(num) {
+      const tr = document.createElement('tr');
+      const cols = [
+        { prefix: 'subject', placeholder: '', style: '' },
+        { prefix: 'code', placeholder: '', style: '' },
+        { prefix: 'content', placeholder: '', style: '' },
+        { prefix: 'hours', placeholder: '', style: 'text-align:center;', tdClass: 'cell-center' }
+      ];
+      cols.forEach(c => {
+        const td = document.createElement('td');
+        if (c.tdClass) td.className = c.tdClass;
+        const ta = document.createElement('textarea');
+        ta.className = 'autogrow';
+        ta.dataset.field = `${c.prefix}-${uid()}`;
+        ta.placeholder = c.placeholder;
+        if (c.style) ta.style.cssText = c.style;
+        td.appendChild(ta);
+        tr.appendChild(td);
+      });
+      return tr;
+    }
+  },
+  curriculumBody: {
+    create(num) {
+      const tr = document.createElement('tr');
+      ['cur-subj','cur-idea','cur-know','cur-do','cur-be'].forEach(p => {
+        const td = document.createElement('td');
+        const ta = document.createElement('textarea');
+        ta.className = 'autogrow';
+        ta.dataset.field = `${p}-${uid()}`;
+        td.appendChild(ta);
+        tr.appendChild(td);
+      });
+      return tr;
+    }
+  },
+  strandBody: {
+    create(num) {
+      const tr = document.createElement('tr');
+      const tdName = document.createElement('td');
+      tdName.className = 'strand-label';
+      const taName = document.createElement('textarea');
+      taName.className = 'autogrow';
+      taName.placeholder = `스트랜드 ${num}`;
+      taName.dataset.field = `strand-name-${uid()}`;
+      taName.style.cssText = 'text-align:center;font-weight:700;color:#B87333;min-height:60px;';
+      tdName.appendChild(taName);
+      tr.appendChild(tdName);
+
+      const tdIdea = document.createElement('td');
+      const taIdea = document.createElement('textarea');
+      taIdea.className = 'autogrow';
+      taIdea.placeholder = '하위 아이디어(일반화) 입력';
+      taIdea.dataset.field = `strand-idea-${uid()}`;
+      taIdea.style.minHeight = '60px';
+      tdIdea.appendChild(taIdea);
+      tr.appendChild(tdIdea);
+
+      const tdQ = document.createElement('td');
+      const taQ = document.createElement('textarea');
+      taQ.className = 'autogrow';
+      taQ.placeholder = '안내 질문 2~4개 입력';
+      taQ.dataset.field = `strand-q-${uid()}`;
+      taQ.style.minHeight = '60px';
+      tdQ.appendChild(taQ);
+      tr.appendChild(tdQ);
+      return tr;
+    }
+  },
+  rubricBody: {
+    create(num) {
+      const tr = document.createElement('tr');
+      [
+        { p: 'rubric-item', ph: `평가 요소 ${num}` },
+        { p: 'rubric-good', ph: '잘함 기준' },
+        { p: 'rubric-avg', ph: '보통 기준' },
+        { p: 'rubric-low', ph: '노력 요함 기준' }
+      ].forEach(c => {
+        const td = document.createElement('td');
+        const ta = document.createElement('textarea');
+        ta.className = 'autogrow';
+        ta.dataset.field = `${c.p}-${uid()}`;
+        ta.placeholder = c.ph;
+        td.appendChild(ta);
+        tr.appendChild(td);
+      });
+      return tr;
+    }
+  },
+  flowBody: {
+    create(num) {
+      const tr = document.createElement('tr');
+      [
+        { prefix: 'flow-h', placeholder: `${num}`, style: 'text-align:center;min-height:56px;' },
+        { prefix: 'flow-strand', placeholder: '', style: 'min-height:56px;' },
+        { prefix: 'flow-act', placeholder: '주요 활동 입력', style: 'min-height:56px;' },
+        { prefix: 'flow-q', placeholder: '안내 질문', style: 'min-height:56px;' },
+        { prefix: 'flow-note', placeholder: '', style: 'min-height:56px;' }
+      ].forEach(f => {
+        const td = document.createElement('td');
+        const ta = document.createElement('textarea');
+        ta.className = 'autogrow';
+        ta.placeholder = f.placeholder;
+        ta.dataset.field = `${f.prefix}-${uid()}`;
+        ta.style.cssText = f.style;
+        td.appendChild(ta);
+        tr.appendChild(td);
+      });
+      return tr;
+    }
+  }
+};
+
+// Create action buttons for a row
+function createRowActions(tr, tbody) {
+  const div = document.createElement('div');
+  div.className = 'row-actions no-print';
+
+  const btnUp = document.createElement('button');
+  btnUp.className = 'row-act-btn';
+  btnUp.title = '위로 이동';
+  btnUp.innerHTML = '▲';
+  btnUp.onclick = (e) => { e.stopPropagation(); moveRow(tr, tbody, -1); };
+
+  const btnInsert = document.createElement('button');
+  btnInsert.className = 'row-act-btn act-insert';
+  btnInsert.title = '아래에 행 삽입';
+  btnInsert.innerHTML = '＋';
+  btnInsert.onclick = (e) => { e.stopPropagation(); insertRowBelow(tr, tbody); };
+
+  const btnDelete = document.createElement('button');
+  btnDelete.className = 'row-act-btn act-delete';
+  btnDelete.title = '이 행 삭제';
+  btnDelete.innerHTML = '×';
+  btnDelete.onclick = (e) => { e.stopPropagation(); deleteRow(tr, tbody); };
+
+  const btnDown = document.createElement('button');
+  btnDown.className = 'row-act-btn';
+  btnDown.title = '아래로 이동';
+  btnDown.innerHTML = '▼';
+  btnDown.onclick = (e) => { e.stopPropagation(); moveRow(tr, tbody, 1); };
+
+  div.appendChild(btnUp);
+  div.appendChild(btnInsert);
+  div.appendChild(btnDelete);
+  div.appendChild(btnDown);
+
+  // Append to last td
+  const lastTd = tr.cells[tr.cells.length - 1];
+  lastTd.style.position = 'relative';
+  lastTd.appendChild(div);
+}
+
+// Move a row up (-1) or down (+1)
+function moveRow(tr, tbody, direction) {
+  const rows = Array.from(tbody.rows);
+  const idx = rows.indexOf(tr);
+  const targetIdx = idx + direction;
+  if (targetIdx < 0 || targetIdx >= rows.length) return;
+
+  if (direction === -1) {
+    tbody.insertBefore(tr, rows[targetIdx]);
+  } else {
+    tbody.insertBefore(tr, rows[targetIdx].nextSibling);
+  }
+  scheduleSave();
+  showToast('행이 이동되었습니다');
+}
+
+// Insert a new row below the given row
+function insertRowBelow(tr, tbody) {
+  const tbodyId = tbody.id;
+  const config = TABLE_CONFIG[tbodyId];
+  if (!config) return;
+
+  const rows = Array.from(tbody.rows);
+  const idx = rows.indexOf(tr);
+  const newTr = config.create(idx + 2);
+  createRowActions(newTr, tbody);
+
+  if (tr.nextSibling) {
+    tbody.insertBefore(newTr, tr.nextSibling);
+  } else {
+    tbody.appendChild(newTr);
+  }
+
+  initAutoGrow();
+  scheduleSave();
+  showToast('행이 삽입되었습니다');
+}
+
+// Delete a row (with confirmation)
+function deleteRow(tr, tbody) {
+  if (tbody.rows.length <= 1) {
+    showToast('마지막 행은 삭제할 수 없습니다');
+    return;
+  }
+  if (!confirm('이 행을 삭제하시겠습니까?')) return;
+  tr.remove();
+  scheduleSave();
+  showToast('행이 삭제되었습니다');
+}
+
+// Attach row actions to all existing rows in dynamic tables
+function initRowActions() {
+  const tableIds = ['basicInfoBody', 'curriculumBody', 'strandBody', 'rubricBody', 'flowBody'];
+  tableIds.forEach(tbodyId => {
+    const tbody = document.getElementById(tbodyId);
+    if (!tbody) return;
+    Array.from(tbody.rows).forEach(tr => {
+      // Skip if already has actions
+      if (tr.querySelector('.row-actions')) return;
+      createRowActions(tr, tbody);
+    });
+  });
+}
+
+// Mobile touch support: toggle row-active class
+let activeRow = null;
+document.addEventListener('touchstart', function(e) {
+  const tr = e.target.closest('.row-actions-wrap tbody tr');
+  if (tr) {
+    if (activeRow && activeRow !== tr) activeRow.classList.remove('row-active');
+    tr.classList.toggle('row-active');
+    activeRow = tr.classList.contains('row-active') ? tr : null;
+  } else {
+    if (activeRow) {
+      activeRow.classList.remove('row-active');
+      activeRow = null;
+    }
+  }
+}, { passive: true });
+
+// Patch existing add functions to include row actions
+const _origAddRow = addRow;
+addRow = function(tbodyId, prefixes, colCount) {
+  _origAddRow(tbodyId, prefixes, colCount);
+  const tbody = document.getElementById(tbodyId);
+  const lastRow = tbody.rows[tbody.rows.length - 1];
+  if (lastRow && !lastRow.querySelector('.row-actions')) {
+    createRowActions(lastRow, tbody);
+  }
+};
+
+const _origAddStrandRow = addStrandRow;
+addStrandRow = function() {
+  _origAddStrandRow();
+  const tbody = document.getElementById('strandBody');
+  const lastRow = tbody.rows[tbody.rows.length - 1];
+  if (lastRow && !lastRow.querySelector('.row-actions')) {
+    createRowActions(lastRow, tbody);
+  }
+};
+
+const _origAddFlowRow = addFlowRow;
+addFlowRow = function() {
+  _origAddFlowRow();
+  const tbody = document.getElementById('flowBody');
+  const lastRow = tbody.rows[tbody.rows.length - 1];
+  if (lastRow && !lastRow.querySelector('.row-actions')) {
+    createRowActions(lastRow, tbody);
+  }
+};
+
 // ===== Init =====
 window.addEventListener('DOMContentLoaded', () => {
   loadData();
   initAutoGrow();
+  initRowActions();
 });
 </script>
 
