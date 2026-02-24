@@ -642,6 +642,95 @@
   }
   .save-status.saved { color: var(--green); background: #e6f4ee; }
 
+  /* ===== Export Dropdown ===== */
+  .export-wrap {
+    position: relative;
+  }
+  .export-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: #fff;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    min-width: 280px;
+    z-index: 150;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+    transition: all 0.2s ease;
+    overflow: hidden;
+  }
+  .export-dropdown.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  .export-dropdown .dd-section-label {
+    padding: 10px 16px 4px;
+    font-size: 7.5pt;
+    font-weight: 700;
+    color: var(--gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+  .export-dropdown .dd-divider {
+    height: 1px;
+    background: var(--gray-200);
+    margin: 4px 0;
+  }
+  .export-dropdown .dd-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
+  }
+  .export-dropdown .dd-item:hover {
+    background: var(--gray-50);
+  }
+  .export-dropdown .dd-item:active {
+    background: var(--gray-100);
+  }
+  .export-dropdown .dd-icon {
+    font-size: 18px;
+    line-height: 1;
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+  }
+  .dd-icon-green { background: #e6f4ee; }
+  .dd-icon-blue { background: var(--blue-light); }
+  .dd-icon-indigo { background: #eef0ff; }
+  .export-dropdown .dd-text {
+    flex: 1;
+  }
+  .export-dropdown .dd-title {
+    font-size: 9.5pt;
+    font-weight: 700;
+    color: var(--gray-800);
+    display: block;
+    line-height: 1.3;
+  }
+  .export-dropdown .dd-desc {
+    font-size: 8pt;
+    color: var(--gray-500);
+    display: block;
+    margin-top: 1px;
+    line-height: 1.4;
+  }
+
   /* ===== Toast Notification ===== */
   .toast {
     position: fixed;
@@ -675,6 +764,170 @@
     .info-item { border-right: none !important; }
   }
 
+  /* ===== Example Panel ===== */
+  .example-banner {
+    background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+    border: 2px solid #ff9800;
+    border-radius: var(--radius-md);
+    margin-bottom: 20px;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+  .example-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .example-toggle:hover { background: rgba(255,152,0,0.08); }
+  .example-toggle-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .example-toggle-left .example-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, #ff9800, #ffa726);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 16px; font-weight: 900;
+    box-shadow: 0 2px 6px rgba(255,152,0,0.3);
+  }
+  .example-toggle-left .example-title {
+    font-size: 11pt;
+    font-weight: 800;
+    color: #e65100;
+    letter-spacing: -0.3px;
+  }
+  .example-toggle-left .example-subtitle {
+    font-size: 8.5pt;
+    color: #bf360c;
+    margin-top: 1px;
+  }
+  .example-arrow {
+    font-size: 18px;
+    color: #e65100;
+    transition: transform 0.3s ease;
+    font-weight: 700;
+  }
+  .example-banner.open .example-arrow {
+    transform: rotate(180deg);
+  }
+  .example-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+  }
+  .example-banner.open .example-content {
+    max-height: 8000px;
+  }
+  .example-inner {
+    padding: 0 20px 20px;
+    border-top: 1px dashed #ffb74d;
+  }
+  .example-inner .ex-label {
+    display: inline-block;
+    background: #ff9800;
+    color: #fff;
+    font-size: 7.5pt;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 3px;
+    margin: 14px 0 8px 0;
+    letter-spacing: 0.5px;
+  }
+  .example-inner .ex-stage {
+    font-size: 11pt;
+    font-weight: 900;
+    padding: 8px 14px;
+    margin: 14px 0 8px 0;
+    border-radius: 4px;
+    color: #fff;
+  }
+  .example-inner .ex-stage.bg1 { background: var(--blue); }
+  .example-inner .ex-stage.bg2 { background: var(--green); }
+  .example-inner .ex-stage.bg3 { background: var(--brown); }
+  .example-inner .ex-sub {
+    font-size: 10.5pt;
+    font-weight: 700;
+    margin: 12px 0 6px 0;
+  }
+  .example-inner .ex-sub.s1 { color: var(--blue); }
+  .example-inner .ex-sub.s2 { color: var(--green); }
+  .example-inner .ex-sub.s3 { color: var(--brown); }
+  .example-inner table {
+    font-size: 9pt;
+    margin: 6px 0 10px 0;
+  }
+  .example-inner th {
+    font-size: 8.5pt;
+    padding: 6px 8px;
+  }
+  .example-inner td {
+    padding: 5px 8px;
+    font-size: 9pt;
+    line-height: 1.6;
+  }
+  .example-inner .ex-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 16px;
+    font-size: 9.5pt;
+    margin: 8px 0;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.6);
+    border-radius: var(--radius-sm);
+  }
+  .example-inner .ex-info b {
+    color: var(--gray-700);
+    min-width: 90px;
+    display: inline-block;
+  }
+  .example-inner .ex-idea {
+    padding: 10px 16px;
+    background: rgba(255,255,255,0.6);
+    border-left: 3px solid var(--blue);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    margin: 6px 0;
+    font-size: 10.5pt;
+    font-weight: 700;
+    color: var(--gray-800);
+  }
+  .example-inner .ex-eq {
+    padding: 10px 16px;
+    background: rgba(255,255,255,0.6);
+    border-left: 3px solid var(--blue);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    margin: 6px 0;
+    font-size: 10.5pt;
+    font-weight: 700;
+    color: var(--blue);
+  }
+  .example-inner .ex-hint {
+    background: rgba(255,255,255,0.5);
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 8.5pt;
+    color: #666;
+    margin: 6px 0;
+  }
+  .example-inner .ex-tag {
+    font-size: 7.5pt;
+    color: #666;
+    background: #f0f0f0;
+    padding: 1px 4px;
+    border-radius: 3px;
+  }
+  .example-inner .ex-kpt th {
+    background: #f5e6d0;
+  }
+  @media print {
+    .example-banner { display: none !important; }
+  }
+
   /* ===== Autogrow textarea style ===== */
   textarea.autogrow {
     overflow: hidden;
@@ -693,15 +946,40 @@
     <span class="save-status" id="saveStatus">
       <span id="saveIcon">💾</span> <span id="saveText">자동 저장 대기</span>
     </span>
-    <button class="tb-btn tb-btn-secondary" onclick="resetAll()" title="모든 입력 초기화">
+    <button class="tb-btn tb-btn-danger" onclick="resetAll()" title="모든 입력 초기화">
       🗑 초기화
     </button>
-    <button class="tb-btn tb-btn-secondary" onclick="downloadHTML()" title="HTML 파일로 다운로드">
-      📄 HTML 저장
-    </button>
-    <button class="tb-btn tb-btn-primary" onclick="printPDF()" title="인쇄 / PDF 저장">
-      🖨 인쇄 / PDF
-    </button>
+    <div class="export-wrap">
+      <button class="tb-btn tb-btn-primary" onclick="toggleExportMenu()" id="exportBtn">
+        📥 내보내기 ▾
+      </button>
+      <div class="export-dropdown" id="exportDropdown">
+        <div class="dd-section-label">배포용 빈 양식</div>
+        <button class="dd-item" onclick="printBlankPDF(); closeExportMenu();">
+          <span class="dd-icon dd-icon-green">📋</span>
+          <span class="dd-text">
+            <span class="dd-title">빈 양식 인쇄</span>
+            <span class="dd-desc">작성 전 배포용 A4 양식 출력</span>
+          </span>
+        </button>
+        <div class="dd-divider"></div>
+        <div class="dd-section-label">내 작성 내용</div>
+        <button class="dd-item" onclick="downloadHTML(); closeExportMenu();">
+          <span class="dd-icon dd-icon-blue">📄</span>
+          <span class="dd-text">
+            <span class="dd-title">HTML 파일 저장</span>
+            <span class="dd-desc">입력한 내용을 HTML 파일로 다운로드</span>
+          </span>
+        </button>
+        <button class="dd-item" onclick="printPDF(); closeExportMenu();">
+          <span class="dd-icon dd-icon-indigo">🖨</span>
+          <span class="dd-text">
+            <span class="dd-title">인쇄 / PDF 저장</span>
+            <span class="dd-desc">입력한 내용을 인쇄하거나 PDF로 저장</span>
+          </span>
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -720,6 +998,204 @@
       <span class="stage-pill pill-s2">2단계 증거 결정</span>
       <span class="arrow-sep">→</span>
       <span class="stage-pill pill-s3">3단계 학습 경험</span>
+    </div>
+  </div>
+
+  <!-- ===== Example Panel ===== -->
+  <div class="example-banner no-print" id="examplePanel">
+    <div class="example-toggle" onclick="toggleExample()">
+      <div class="example-toggle-left">
+        <div class="example-icon">📖</div>
+        <div>
+          <div class="example-title">작성 예시 보기 — 3학년 도덕 '가족 사랑의 길을 찾아서'</div>
+          <div class="example-subtitle">클릭하여 완성된 설계 예시를 참고하세요 (접기/펼치기)</div>
+        </div>
+      </div>
+      <span class="example-arrow" id="exampleArrow">▼</span>
+    </div>
+    <div class="example-content" id="exampleContent">
+      <div class="example-inner">
+
+        <!-- 기본정보 -->
+        <div class="ex-label">기본 정보</div>
+        <table class="t-s1">
+          <thead><tr><th style="width:10%">교과</th><th style="width:14%">성취기준 코드</th><th>성취기준 내용 (요약)</th><th style="width:6%">차시</th></tr></thead>
+          <tbody>
+            <tr><td><b>도덕</b></td><td>[4도02-01]</td><td>효, 우애의 의미와 필요성을 이해하고 가족의 행복을 위해 실천 계획을 세운다</td><td style="text-align:center">8</td></tr>
+            <tr><td><b>국어</b></td><td>[4국03-04]</td><td>목적과 주제를 고려하여 독자(가족)에게 마음을 전하는 글을 쓴다</td><td style="text-align:center">4</td></tr>
+            <tr><td><b>미술</b></td><td>[4미02-04]</td><td>표현 의도를 가지고 가족을 위한 감사 선물을 제작한다</td><td style="text-align:center">4</td></tr>
+            <tr><td><b>음악</b></td><td>[4음01-02]</td><td>기초적인 음악 요소를 살려 가족을 위한 노래를 연주한다</td><td style="text-align:center">4</td></tr>
+          </tbody>
+        </table>
+        <div class="ex-info">
+          <div><b>학년:</b> 3학년</div>
+          <div><b>총 차시:</b> 20차시</div>
+          <div><b>기간:</b> 4월 2주 ~ 6월 1주</div>
+          <div><b>협력팀원:</b> ○○○, ○○○</div>
+          <div style="grid-column:1/-1"><b>프로젝트명:</b> 가족 사랑의 길을 찾아서</div>
+          <div style="grid-column:1/-1"><b>핵심역량:</b> 공감 소통 역량, 공동체 역량</div>
+        </div>
+
+        <!-- 1단계 -->
+        <div class="ex-stage bg1">1단계 — 바라는 결과 확인</div>
+
+        <div class="ex-sub s1">① 교육과정 분석 (교과별)</div>
+        <table class="t-s1">
+          <thead><tr><th style="width:9%">교과</th><th style="width:26%">핵심 아이디어</th><th style="width:20%">지식·이해 (Know)</th><th style="width:20%">과정·기능 (Do)</th><th style="width:25%">가치·태도 (Be)</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><b>도덕</b></td>
+              <td>배려는 타인에 대한 관심과 공감을 기반으로 타인의 삶을 개선한다.</td>
+              <td>• 효와 우애의 의미<br>• 가족의 역할과 책임<br>• 공감의 의미와 방법</td>
+              <td>• 실천 계획 세우기<br>• 도덕적 상황 판단</td>
+              <td>• 가족을 사랑하는 마음<br>• 감사와 존중의 태도<br>• 지속적 실천 의지</td>
+            </tr>
+            <tr>
+              <td><b>국어</b></td>
+              <td>목적과 상황에 맞게 글을 쓰면 의미를 효과적으로 전달할 수 있다.</td>
+              <td>• 글의 목적과 독자<br>• 진솔한 표현 방법</td>
+              <td>• 마음을 전하는 글쓰기</td>
+              <td>• 표현하려는 의지</td>
+            </tr>
+            <tr>
+              <td><b>미술</b></td>
+              <td>표현 의도에 따라 재료와 방법을 선택하면 자신의 생각을 시각적으로 전달할 수 있다.</td>
+              <td>• 표현 의도와 재료</td>
+              <td>• 감사 선물 제작하기</td>
+              <td>• 정성을 담는 태도</td>
+            </tr>
+            <tr>
+              <td><b>음악</b></td>
+              <td>음악의 기초 요소를 살려 표현하면 감정을 효과적으로 전달할 수 있다.</td>
+              <td>• 기초적 음악 요소</td>
+              <td>• 가족을 위한 노래 공연</td>
+              <td>• 음악으로 마음 전하기</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="ex-sub s1">② 개념 설계</div>
+        <table class="t-s1">
+          <tbody>
+            <tr><th style="width:27%;background:#dce8f5;">매크로 개념 (렌즈)</th><td><b>상호작용</b>, <b>책임</b> — 대구 8대 개념에서 선택</td></tr>
+            <tr><th style="background:#dce8f5;">마이크로 개념</th><td>효, 우애, 배려, 존중, 공감, 표현, 실천</td></tr>
+          </tbody>
+        </table>
+
+        <div class="ex-sub s1">③ 중심 아이디어 + 핵심 질문</div>
+        <div style="font-size:9pt;color:var(--gray-600);margin-bottom:4px;">중심 아이디어 (Central Idea)</div>
+        <div class="ex-idea">가족의 사랑과 행복은 책임 있는 표현을 통해 깊어진다.</div>
+        <div style="font-size:9pt;color:var(--gray-600);margin:8px 0 4px 0;">핵심 질문 (Overarching EQ)</div>
+        <div class="ex-eq">가족에게 사랑을 표현하는 것이 왜 중요하며, 어떻게 할 수 있을까?</div>
+
+        <div class="ex-sub s1">④ 스트랜드별 하위 아이디어 + 안내 질문</div>
+        <table class="t-s1">
+          <thead><tr><th style="width:20%">스트랜드</th><th style="width:35%">하위 아이디어 (일반화)</th><th style="width:45%">안내 질문</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><b>스트랜드 1</b><br><i>가족과 행복의 이해</i><br>(개념 형성)</td>
+              <td>가족의 행복은 서로를 존중하고 배려하는 책임 있는 태도에서 비롯된다.</td>
+              <td>• 우리 가족이 함께 있을 때 행복하다고 느낀 적은? <span class="ex-tag">사실</span><br>• 효란 무엇이며, 우리 생활에서 어떻게 나타나는가? <span class="ex-tag">개념</span><br>• 가족이 서로 존중하지 않는다면 어떤 일이 생길까? <span class="ex-tag">논쟁</span></td>
+            </tr>
+            <tr>
+              <td><b>스트랜드 2</b><br><i>사랑의 표현과 소통</i><br>(표현 확장)</td>
+              <td>마음을 담은 표현은 관계를 더욱 깊고 의미 있게 만든다.</td>
+              <td>• 가족에게 사랑을 어떻게 표현해 보았나? <span class="ex-tag">사실</span><br>• 편지는 왜 마음을 전하는 좋은 방법이 될 수 있을까? <span class="ex-tag">개념</span><br>• 같은 말이라도 진심이 느껴질 때와 아닐 때는? <span class="ex-tag">논쟁</span></td>
+            </tr>
+            <tr>
+              <td><b>스트랜드 3</b><br><i>실천과 전이</i><br>(행동 확장/전이)</td>
+              <td>지속적인 사랑의 실천은 가족과 공동체의 행복을 유지한다.</td>
+              <td>• 사랑은 한 번 표현하면 충분할까? <span class="ex-tag">논쟁</span><br>• 작은 행동 하나가 가족 관계를 바꿀 수 있을까? <span class="ex-tag">논쟁</span><br>• 이 배움은 친구 관계에도 적용될 수 있을까? <span class="ex-tag">논쟁</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- 2단계 -->
+        <div class="ex-stage bg2">2단계 — 증거 결정</div>
+
+        <div class="ex-sub s2">⑤ GRASPS 수행과제</div>
+        <div class="ex-hint">과제명: <b>우리 가족 행복 캠페인 — "가족에게 전하는 작은 실천 프로젝트"</b></div>
+        <table class="t-s2">
+          <thead><tr><th style="width:7%">요소</th><th style="width:20%">의미</th><th>내용</th></tr></thead>
+          <tbody>
+            <tr><td style="text-align:center;font-weight:900;color:var(--green);font-size:13pt;">G</td><td>목표/도전 과제</td><td>배려와 존중의 가치를 가족 안에서 실천하는 방법 찾기</td></tr>
+            <tr><td style="text-align:center;font-weight:900;color:var(--green);font-size:13pt;">R</td><td>학생의 역할</td><td>가족 행복 캠페인을 기획하는 '가족 행복 디자이너'</td></tr>
+            <tr><td style="text-align:center;font-weight:900;color:var(--green);font-size:13pt;">A</td><td>대상/청중</td><td>우리 가족 구성원 (부모님, 형제자매)</td></tr>
+            <tr><td style="text-align:center;font-weight:900;color:var(--green);font-size:13pt;">S</td><td>실제적 맥락</td><td>가족 간 소통 부족으로 서운함을 느낀 경험을 떠올리며 해결책 탐색</td></tr>
+            <tr><td style="text-align:center;font-weight:900;color:var(--green);font-size:13pt;">P</td><td>산출물/수행</td><td>가족에게 전하는 실천 약속 카드 + 1주일 실천 일지</td></tr>
+            <tr><td style="text-align:center;font-weight:900;color:var(--green);font-size:13pt;">S</td><td>평가 준거</td><td>개념(효, 우애, 존중) 연결성 / 실천 구체성 / 진정성</td></tr>
+          </tbody>
+        </table>
+
+        <div class="ex-sub s2">⑥ 루브릭</div>
+        <table class="t-s2">
+          <thead><tr><th style="width:20%">평가 요소</th><th style="width:27%">잘함 ★★★</th><th style="width:27%">보통 ★★</th><th style="width:26%">노력 요함 ★</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><b>개념 연결성</b> (Know)</td>
+              <td>효·우애·존중 개념을 정확히 이해하고 실천 계획에 자연스럽게 연결함</td>
+              <td>개념을 부분적으로 이해하나 실천과의 연결이 약함</td>
+              <td>개념 이해가 불분명하고 연결이 드러나지 않음</td>
+            </tr>
+            <tr>
+              <td><b>실천 구체성</b> (Do)</td>
+              <td>구체적이고 실현 가능한 실천 계획을 세우고, 1주일간 꾸준히 실행함</td>
+              <td>실천 계획을 세웠으나 구체성이 부족하거나 실행이 간헐적임</td>
+              <td>실천 계획이 추상적이고 실행 기록이 거의 없음</td>
+            </tr>
+            <tr>
+              <td><b>진정성</b> (Be)</td>
+              <td>가족에 대한 진심이 담긴 표현이 드러나며 지속적 실천 의지가 보임</td>
+              <td>표현에 진심이 일부 드러나나 형식적인 부분이 있음</td>
+              <td>형식적 수행에 그치며 진정성이 잘 느껴지지 않음</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- 3단계 -->
+        <div class="ex-stage bg3">3단계 — 학습 경험 계획</div>
+
+        <div class="ex-sub s3">⑦ 단원 학습 흐름</div>
+        <table class="t-s3">
+          <thead><tr><th style="width:7%">차시</th><th style="width:18%">스트랜드</th><th style="width:32%">주요 활동</th><th style="width:30%">안내 질문</th><th style="width:13%">비고</th></tr></thead>
+          <tbody>
+            <tr>
+              <td style="text-align:center">1~2</td>
+              <td><b>스트랜드 1</b><br><i>가족과 행복의 이해</i></td>
+              <td>• 가족 행복 경험 나누기<br>• 효·우애 의미 탐구<br>• 가족 역할·책임 마인드맵</td>
+              <td>• 효란 무엇이며, 우리 생활에서 어떻게 나타나는가? <span class="ex-tag">개념</span><br>• 가족이 서로 존중하지 않으면? <span class="ex-tag">논쟁</span></td>
+              <td>개념 형성</td>
+            </tr>
+            <tr>
+              <td style="text-align:center">3~5</td>
+              <td><b>스트랜드 2</b><br><i>사랑의 표현과 소통</i></td>
+              <td>• 가족 인터뷰 활동<br>• 마음을 전하는 글쓰기<br>• 감사 선물 제작, 노래 연습</td>
+              <td>• 가족에게 사랑을 어떻게 표현해 보았나? <span class="ex-tag">사실</span><br>• 편지는 왜 좋은 방법이 될까? <span class="ex-tag">개념</span></td>
+              <td>표현 확장</td>
+            </tr>
+            <tr>
+              <td style="text-align:center">6~8</td>
+              <td><b>스트랜드 3</b><br><i>실천과 전이</i></td>
+              <td>• 개념 정리 토의<br>• <b>가족 행복 캠페인 실행 (수행과제)</b><br>• 실천 결과 공유, KPT 성찰</td>
+              <td>• 작은 행동 하나가 가족 관계를 바꿀 수 있을까? <span class="ex-tag">논쟁</span><br>• 친구 관계에도 적용될 수 있을까? <span class="ex-tag">논쟁</span></td>
+              <td>행동 확장 / 전이</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="ex-sub s3">KPT 성찰</div>
+        <table class="ex-kpt">
+          <thead><tr><th style="width:33%">Keep (잘 된 점)</th><th style="width:34%">Problem (보완할 점)</th><th style="width:33%">Try (다음 시도)</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>• 상호작용·책임 렌즈로 4교과를 자연스럽게 연결<br>• GRASPS가 학생의 실생활 맥락과 잘 연결됨</td>
+              <td>• 음악 교과 차시가 부족할 수 있음<br>• 가정과의 연계 활동 구체화 필요</td>
+              <td>• 학부모 참여형 활동 추가 검토<br>• 디지털 실천 일지 도구 활용</td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
     </div>
   </div>
 
@@ -1203,6 +1679,26 @@ function initAutoGrow() {
   });
 }
 
+// ===== Example Panel Toggle =====
+function toggleExample() {
+  document.getElementById('examplePanel').classList.toggle('open');
+}
+
+// ===== Export Dropdown =====
+function toggleExportMenu() {
+  document.getElementById('exportDropdown').classList.toggle('open');
+}
+function closeExportMenu() {
+  document.getElementById('exportDropdown').classList.remove('open');
+}
+// Close dropdown on outside click
+document.addEventListener('click', function(e) {
+  const wrap = document.querySelector('.export-wrap');
+  if (wrap && !wrap.contains(e.target)) {
+    closeExportMenu();
+  }
+});
+
 // ===== Toast =====
 function showToast(msg, duration = 2500) {
   const t = document.getElementById('toast');
@@ -1439,6 +1935,33 @@ function downloadHTML() {
 // ===== Print / PDF =====
 function printPDF() {
   window.print();
+}
+
+// ===== Print Blank PDF (index.html) =====
+function printBlankPDF() {
+  // Create a hidden iframe to load index.html and print it
+  let iframe = document.getElementById('printFrame');
+  if (iframe) iframe.remove();
+
+  iframe = document.createElement('iframe');
+  iframe.id = 'printFrame';
+  iframe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:210mm;height:297mm;border:none;';
+  document.body.appendChild(iframe);
+
+  iframe.onload = function() {
+    try {
+      iframe.contentWindow.focus();
+      iframe.contentWindow.print();
+    } catch (e) {
+      // Cross-origin fallback: open in new tab
+      window.open('index.html', '_blank');
+    }
+    // Clean up after a delay
+    setTimeout(() => { if (iframe.parentNode) iframe.remove(); }, 3000);
+  };
+
+  iframe.src = 'index.html';
+  showToast('인쇄용 빈 양식을 불러오는 중...');
 }
 
 // ===== Init =====
