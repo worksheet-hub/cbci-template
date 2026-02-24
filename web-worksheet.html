@@ -541,20 +541,17 @@
     background: var(--blue-light);
   }
   /* ===== Row Action Buttons ===== */
-  .row-actions-wrap {
-    position: relative;
-  }
-  .row-actions-wrap tbody tr {
+  .row-actions-wrap tbody td:last-child {
     position: relative;
   }
   .row-actions {
     position: absolute;
-    right: -36px;
+    right: 4px;
     top: 50%;
     transform: translateY(-50%);
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 2px;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.15s ease;
@@ -566,12 +563,12 @@
     pointer-events: auto;
   }
   .row-act-btn {
-    width: 24px; height: 24px;
+    width: 22px; height: 22px;
     border: 1px solid var(--gray-300);
-    border-radius: 5px;
-    background: #fff;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.95);
     color: var(--gray-600);
-    font-size: 13px;
+    font-size: 12px;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -579,7 +576,7 @@
     transition: var(--transition);
     padding: 0;
     line-height: 1;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   }
   .row-act-btn:hover {
     background: var(--blue-light);
@@ -602,11 +599,8 @@
     pointer-events: none;
   }
   @media (max-width: 900px) {
-    .row-actions {
-      right: -30px;
-    }
     .row-act-btn {
-      width: 22px; height: 22px;
+      width: 20px; height: 20px;
       font-size: 11px;
     }
   }
@@ -2174,7 +2168,6 @@ function createRowActions(tr, tbody) {
 
   // Append to last td
   const lastTd = tr.cells[tr.cells.length - 1];
-  lastTd.style.position = 'relative';
   lastTd.appendChild(div);
 }
 
