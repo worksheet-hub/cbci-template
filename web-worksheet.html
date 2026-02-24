@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개념 기반 탐구 프로젝트 설계 웹학습지</title>
+<style>
+  /* ===== CSS Variables ===== */
+  :root {
+    --blue: #2E75B6;
+    --blue-light: #e8f0fe;
+    --blue-dark: #1a3a5c;
+    --green: #2E8B6E;
+    --green-light: #e6f4ee;
+    --green-dark: #1a4a38;
+    --brown: #B87333;
+    --brown-light: #fbf0e4;
+    --brown-dark: #5a3010;
+    --gray-50: #f8f9fa;
+    --gray-100: #f1f3f5;
+    --gray-200: #e9ecef;
+    --gray-300: #dee2e6;
+    --gray-400: #ced4da;
+    --gray-500: #adb5bd;
+    --gray-600: #868e96;
+    --gray-700: #495057;
+    --gray-800: #343a40;
+    --gray-900: #212529;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --transition: all 0.2s ease;
+  }
+
+  /* ===== Print ===== */
+  @page { size: A4; margin: 15mm 18mm; }
+  @media print {
+    body { background: #fff !important; padding: 0 !important; }
+    .toolbar, .add-row-btn, .remove-row-btn, .section-actions, .no-print { display: none !important; }
+    .page-break { page-break-before: always; }
+    .no-break { page-break-inside: avoid; }
+    .worksheet-container { max-width: 100%; box-shadow: none; border: none; padding: 20px; }
+    textarea { border: none !important; resize: none !important; overflow: hidden !important; background: transparent !important; box-shadow: none !important; }
+    textarea::placeholder { color: transparent !important; }
+    .stage-badge, .sub-num, thead, .footer-bar, .hint-box, .ai-tip, .concept-info {
+      -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    }
+    .info-label { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+
+  /* ===== Reset & Base ===== */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+    font-size: 10pt;
+    color: var(--gray-900);
+    line-height: 1.7;
+    background: linear-gradient(135deg, #f5f7fa 0%, #eef1f5 100%);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* ===== Toolbar ===== */
+  .toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--gray-200);
+    padding: 10px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    color: var(--blue-dark);
+    font-size: 11pt;
+  }
+  .toolbar-left .logo-icon {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--blue), #4a9ade);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 14pt; font-weight: 900;
+  }
+  .toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .tb-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 9.5pt;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    white-space: nowrap;
+  }
+  .tb-btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .tb-btn:active { transform: translateY(0); }
+  .tb-btn-primary {
+    background: linear-gradient(135deg, var(--blue), #4a9ade);
+    color: #fff;
+  }
+  .tb-btn-secondary {
+    background: var(--gray-100);
+    color: var(--gray-700);
+    border: 1px solid var(--gray-300);
+  }
+  .tb-btn-success {
+    background: linear-gradient(135deg, var(--green), #3aab8a);
+    color: #fff;
+  }
+  .tb-btn-danger {
+    background: var(--gray-100);
+    color: #e03131;
+    border: 1px solid #ffc9c9;
+  }
+  .tb-btn-danger:hover { background: #fff5f5; }
+
+  /* ===== Container ===== */
+  .worksheet-container {
+    max-width: 860px;
+    margin: 24px auto;
+    background: #fff;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    padding: 36px 40px;
+    border: 1px solid var(--gray-200);
+  }
+
+  /* ===== Header ===== */
+  .doc-header {
+    border-top: 5px solid var(--blue);
+    padding-top: 18px;
+    margin-bottom: 20px;
+  }
+  .doc-header .corner-label {
+    font-size: 8pt;
+    color: var(--gray-500);
+    font-style: italic;
+    letter-spacing: 0.3px;
+    text-align: right;
+    margin-bottom: 4px;
+  }
+  .doc-header h1 {
+    font-size: 18pt;
+    font-weight: 900;
+    color: var(--blue-dark);
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+  }
+  .subtitle-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 9.5pt;
+    color: var(--gray-600);
+    flex-wrap: wrap;
+    padding-bottom: 14px;
+    border-bottom: 2px solid var(--gray-200);
+  }
+  .stage-pill {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: 14px;
+    font-size: 8.5pt;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+  }
+  .pill-s1 { background: var(--blue); color: #fff; }
+  .pill-s2 { background: var(--green); color: #fff; }
+  .pill-s3 { background: var(--brown); color: #fff; }
+  .arrow-sep { color: var(--gray-400); font-size: 10pt; }
+
+  /* ===== Stage Headers ===== */
+  .stage-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 28px 0 14px 0;
+  }
+  .stage-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 54px; height: 54px;
+    border-radius: 50%;
+    font-size: 8.5pt;
+    font-weight: 800;
+    color: #fff;
+    flex-shrink: 0;
+    line-height: 1.2;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+  }
+  .badge-s1 { background: linear-gradient(135deg, var(--blue), #4a9ade); }
+  .badge-s2 { background: linear-gradient(135deg, var(--green), #3aab8a); }
+  .badge-s3 { background: linear-gradient(135deg, var(--brown), #d4904a); }
+  .stage-title {
+    font-size: 14pt;
+    font-weight: 900;
+    letter-spacing: -0.3px;
+  }
+  .stage-title.s1 { color: var(--blue); }
+  .stage-title.s2 { color: var(--green); }
+  .stage-title.s3 { color: var(--brown); }
+  .stage-divider {
+    flex: 1;
+    height: 3px;
+    border-radius: 2px;
+  }
+  .div-s1 { background: linear-gradient(to right, var(--blue), var(--blue-light)); }
+  .div-s2 { background: linear-gradient(to right, var(--green), var(--green-light)); }
+  .div-s3 { background: linear-gradient(to right, var(--brown), var(--brown-light)); }
+
+  /* ===== Sub Headers ===== */
+  .sub-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 18px 0 8px 0;
+  }
+  .sub-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    font-size: 8.5pt;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .num-s1 { background: var(--blue); }
+  .num-s2 { background: var(--green); }
+  .num-s3 { background: var(--brown); }
+  .sub-title {
+    font-size: 11.5pt;
+    font-weight: 800;
+    color: var(--gray-800);
+  }
+
+  /* ===== Info Grid ===== */
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid #c8d4e8;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    margin: 10px 0;
+  }
+  .info-item {
+    display: flex;
+    border-bottom: 1px solid #dde4ef;
+    border-right: 1px solid #dde4ef;
+    min-height: 36px;
+  }
+  .info-item:nth-child(2n) { border-right: none; }
+  .info-item:nth-last-child(-n+2) { border-bottom: none; }
+  .info-label {
+    background: #EEF3FA;
+    font-weight: 700;
+    font-size: 9pt;
+    color: var(--blue);
+    padding: 6px 12px;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    min-width: 100px;
+    border-right: 1px solid #dde4ef;
+  }
+  .info-value {
+    flex: 1;
+    padding: 0;
+  }
+  .info-value textarea {
+    width: 100%;
+    height: 100%;
+    min-height: 36px;
+    border: none;
+    padding: 6px 10px;
+    font-size: 9.5pt;
+    font-family: inherit;
+    line-height: 1.6;
+    resize: none;
+    background: transparent;
+  }
+  .info-value textarea:focus { outline: none; background: #fafbff; }
+  .info-item.full { grid-column: 1 / -1; border-right: none; }
+
+  /* ===== Tables ===== */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0;
+    font-size: 9.5pt;
+  }
+  th {
+    font-weight: 700;
+    text-align: center;
+    font-size: 9pt;
+    padding: 8px 10px;
+    vertical-align: middle;
+  }
+  td {
+    border: 1px solid #c8cdd6;
+    padding: 0;
+    vertical-align: top;
+  }
+  th { border: 1px solid #b0b8c8; }
+
+  .t-s1 th { background: #dce8f5; color: var(--blue-dark); }
+  .t-s1 td { border-color: #c0cfe8; }
+  .t-s2 th { background: #d4ede4; color: var(--green-dark); }
+  .t-s2 td { border-color: #b8d8c8; }
+  .t-s3 th { background: #f5e8d4; color: var(--brown-dark); }
+  .t-s3 td { border-color: #e0c8a8; }
+  .t-kpt th { background: var(--gray-100); color: var(--gray-800); }
+  .t-kpt td { border-color: #ccc; }
+
+  /* ===== Textarea in cells ===== */
+  td textarea {
+    width: 100%;
+    min-height: 48px;
+    border: none;
+    padding: 8px 10px;
+    font-size: 9.5pt;
+    font-family: inherit;
+    line-height: 1.65;
+    resize: vertical;
+    background: transparent;
+    transition: background 0.15s;
+  }
+  td textarea:focus {
+    outline: none;
+    background: rgba(46, 117, 182, 0.03);
+  }
+  td textarea::placeholder {
+    color: var(--gray-400);
+    font-style: italic;
+  }
+  td.cell-center textarea {
+    text-align: center;
+  }
+
+  /* ===== GRASPS & WHERETO ===== */
+  .grasps-letter {
+    font-weight: 900;
+    font-size: 15pt;
+    color: var(--green);
+    text-align: center;
+    vertical-align: middle;
+    padding: 8px !important;
+    width: 50px;
+  }
+  .whereto-letter {
+    font-weight: 900;
+    font-size: 14pt;
+    color: var(--brown);
+    text-align: center;
+    vertical-align: middle;
+    padding: 8px !important;
+    width: 50px;
+  }
+  .grasps-meaning, .whereto-meaning {
+    vertical-align: middle;
+    padding: 8px 10px !important;
+    font-size: 9pt;
+  }
+
+  /* ===== Hints & Tips ===== */
+  .hint-box {
+    background: #f0f5fc;
+    border-left: 4px solid var(--blue);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 10px 14px;
+    font-size: 9pt;
+    color: #3a4a6a;
+    margin: 8px 0;
+    line-height: 1.7;
+  }
+  .ai-tip {
+    background: #fffbec;
+    border-left: 4px solid #e0a800;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 10px 14px;
+    font-size: 9pt;
+    color: #5a4800;
+    font-style: italic;
+    margin: 6px 0 10px 0;
+    line-height: 1.7;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    justify-content: space-between;
+  }
+  .ai-tip b { color: #7a5f00; font-style: normal; }
+  .ai-tip .nlm-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 12px;
+    background: linear-gradient(135deg, #fbbc04, #f9ab00);
+    color: #fff;
+    font-size: 8pt;
+    font-weight: 700;
+    font-style: normal;
+    border-radius: 14px;
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: var(--transition);
+    box-shadow: 0 1px 4px rgba(249, 171, 0, 0.3);
+  }
+  .ai-tip .nlm-link:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(249, 171, 0, 0.4);
+    background: linear-gradient(135deg, #f9ab00, #e69900);
+  }
+
+  /* ===== Concept Info ===== */
+  .concept-info {
+    background: #f5f8fd;
+    border: 1px solid #c8d8ee;
+    border-radius: var(--radius-sm);
+    padding: 14px 18px;
+    margin: 10px 0;
+    font-size: 9pt;
+    line-height: 1.8;
+  }
+  .concept-info h4 {
+    color: var(--blue);
+    font-size: 10pt;
+    margin-bottom: 8px;
+  }
+  .concept-info .item-title { font-weight: 700; color: var(--gray-800); margin-top: 6px; display: block; }
+  .concept-info .indent { padding-left: 16px; color: var(--gray-700); margin: 2px 0; display: block; }
+
+  /* ===== Input Line ===== */
+  .input-line-wrap {
+    margin: 6px 0;
+  }
+  .input-line-wrap label {
+    display: block;
+    font-size: 9.5pt;
+    font-weight: 700;
+    color: var(--blue-dark);
+    margin-bottom: 4px;
+  }
+  .input-line-wrap label span {
+    font-weight: 400;
+    color: var(--gray-600);
+    font-size: 8.5pt;
+  }
+  .input-line-wrap textarea {
+    width: 100%;
+    min-height: 44px;
+    border: 1px dashed var(--gray-400);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    font-size: 10pt;
+    font-family: inherit;
+    line-height: 1.7;
+    resize: vertical;
+    transition: var(--transition);
+  }
+  .input-line-wrap textarea:focus {
+    outline: none;
+    border-color: var(--blue);
+    border-style: solid;
+    box-shadow: 0 0 0 3px rgba(46, 117, 182, 0.1);
+    background: #fafbff;
+  }
+  .input-line-wrap textarea::placeholder {
+    color: var(--gray-400);
+    font-style: italic;
+  }
+
+  /* ===== Lens Table ===== */
+  .lens-th {
+    background: #dce8f5;
+    color: var(--blue-dark);
+    font-weight: 700;
+    font-size: 9pt;
+    padding: 10px 14px !important;
+    vertical-align: middle;
+    border: 1px solid #b0c4de;
+    width: 28%;
+  }
+  .lens-td {
+    border: 1px solid #c0cfe8;
+    padding: 0;
+    vertical-align: top;
+  }
+  .lens-td textarea {
+    min-height: 52px;
+  }
+
+  /* ===== Add/Remove Row Buttons ===== */
+  .table-actions {
+    display: flex;
+    gap: 8px;
+    margin: 6px 0 4px 0;
+  }
+  .add-row-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 14px;
+    border: 1px dashed var(--gray-400);
+    border-radius: var(--radius-sm);
+    background: var(--gray-50);
+    color: var(--gray-600);
+    font-size: 8.5pt;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  .add-row-btn:hover {
+    border-color: var(--blue);
+    color: var(--blue);
+    background: var(--blue-light);
+  }
+  .remove-row-btn {
+    position: absolute;
+    right: -28px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 22px; height: 22px;
+    border: none;
+    border-radius: 50%;
+    background: #fee2e2;
+    color: #e03131;
+    font-size: 12px;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+  }
+  .remove-row-btn:hover { background: #fca5a5; }
+  tr:hover .remove-row-btn { display: inline-flex; }
+  tr { position: relative; }
+
+  /* ===== Description text ===== */
+  .desc-text {
+    font-size: 9pt;
+    color: var(--gray-600);
+    font-style: italic;
+    margin: 4px 0 10px 4px;
+  }
+
+  /* ===== Page Labels ===== */
+  .page-label {
+    text-align: right;
+    font-size: 8pt;
+    color: var(--gray-400);
+    margin-bottom: 6px;
+    font-style: italic;
+  }
+
+  /* ===== Footer ===== */
+  .footer-bar {
+    margin-top: 28px;
+    padding: 10px 18px;
+    background: linear-gradient(135deg, var(--blue-dark), #2a5580);
+    color: #fff;
+    border-radius: var(--radius-sm);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 8.5pt;
+  }
+  .footer-bar .left { font-weight: 700; letter-spacing: 0.3px; }
+  .footer-bar .right { opacity: 0.75; font-style: italic; }
+
+  /* ===== Strand center ===== */
+  .strand-label {
+    text-align: center;
+    vertical-align: middle;
+    font-weight: 700;
+    color: var(--brown);
+    background: #fef8f0;
+    font-size: 9pt;
+    padding: 8px !important;
+  }
+  .strand-label textarea {
+    text-align: center;
+    font-weight: 700;
+    color: var(--brown);
+    background: transparent;
+  }
+
+  /* ===== Checkbox Cells ===== */
+  .check-cell {
+    padding: 8px 10px !important;
+  }
+  .check-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 6px;
+    font-size: 9pt;
+    cursor: pointer;
+  }
+  .check-label input[type="checkbox"] {
+    width: 16px; height: 16px;
+    margin-top: 2px;
+    accent-color: var(--brown);
+    cursor: pointer;
+  }
+
+  /* ===== Save Status ===== */
+  .save-status {
+    font-size: 8pt;
+    color: var(--gray-500);
+    padding: 4px 10px;
+    border-radius: 12px;
+    background: var(--gray-100);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .save-status.saved { color: var(--green); background: #e6f4ee; }
+
+  /* ===== Toast Notification ===== */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--gray-800);
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: var(--radius-md);
+    font-size: 9.5pt;
+    font-weight: 600;
+    box-shadow: var(--shadow-lg);
+    z-index: 200;
+    opacity: 0;
+    transition: all 0.3s ease;
+  }
+  .toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 900px) {
+    .worksheet-container { padding: 20px; margin: 12px; border-radius: var(--radius-md); }
+    .toolbar { padding: 8px 16px; flex-wrap: wrap; }
+    .toolbar-left { font-size: 10pt; }
+    .tb-btn { padding: 6px 12px; font-size: 8.5pt; }
+    .info-grid { grid-template-columns: 1fr; }
+    .info-item:nth-child(2n) { border-right: none; }
+    .info-item { border-right: none !important; }
+  }
+
+  /* ===== Autogrow textarea style ===== */
+  textarea.autogrow {
+    overflow: hidden;
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== Toolbar ===== -->
+<div class="toolbar no-print">
+  <div class="toolbar-left">
+    <div class="logo-icon">C</div>
+    <span>CBCI 웹학습지</span>
+  </div>
+  <div class="toolbar-right">
+    <span class="save-status" id="saveStatus">
+      <span id="saveIcon">💾</span> <span id="saveText">자동 저장 대기</span>
+    </span>
+    <button class="tb-btn tb-btn-secondary" onclick="resetAll()" title="모든 입력 초기화">
+      🗑 초기화
+    </button>
+    <button class="tb-btn tb-btn-secondary" onclick="downloadHTML()" title="HTML 파일로 다운로드">
+      📄 HTML 저장
+    </button>
+    <button class="tb-btn tb-btn-primary" onclick="printPDF()" title="인쇄 / PDF 저장">
+      🖨 인쇄 / PDF
+    </button>
+  </div>
+</div>
+
+<!-- ===== Main Container ===== -->
+<div class="worksheet-container" id="worksheetContainer">
+
+  <!-- ===== Cover Header ===== -->
+  <div class="doc-header">
+    <div class="corner-label">개념기반수업설계 AI로 날개를 달다</div>
+    <h1>개념 기반 탐구 프로젝트 설계 워크시트</h1>
+    <div class="subtitle-row">
+      <span>백워드 설계 3단계</span>
+      <span class="arrow-sep">:</span>
+      <span class="stage-pill pill-s1">1단계 바라는 결과</span>
+      <span class="arrow-sep">→</span>
+      <span class="stage-pill pill-s2">2단계 증거 결정</span>
+      <span class="arrow-sep">→</span>
+      <span class="stage-pill pill-s3">3단계 학습 경험</span>
+    </div>
+  </div>
+
+  <!-- ===== Basic Info ===== -->
+  <div class="sub-header">
+    <span class="sub-title" style="color:var(--blue-dark);">📋 기본 정보</span>
+  </div>
+
+  <table class="t-s1" id="basicInfoTable">
+    <thead>
+      <tr>
+        <th style="width:14%">교과</th>
+        <th style="width:20%">성취기준 코드</th>
+        <th style="width:51%">성취기준 내용 (요약)</th>
+        <th style="width:15%">차시</th>
+      </tr>
+    </thead>
+    <tbody id="basicInfoBody">
+      <tr>
+        <td><textarea class="autogrow" placeholder="예: 도덕" data-field="subject-1"></textarea></td>
+        <td><textarea class="autogrow" placeholder="[4도02-01]" data-field="code-1"></textarea></td>
+        <td><textarea class="autogrow" placeholder="효, 우애의 의미와 필요성을 이해하고…" data-field="content-1"></textarea></td>
+        <td class="cell-center"><textarea class="autogrow" placeholder="5" data-field="hours-1" style="text-align:center;"></textarea></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="table-actions no-print">
+    <button class="add-row-btn" onclick="addRow('basicInfoBody', ['subject','code','content','hours'], 4)">+ 성취기준 행 추가</button>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-item">
+      <div class="info-label">총 차시</div>
+      <div class="info-value"><textarea class="autogrow" placeholder="예: 15차시" data-field="total-hours"></textarea></div>
+    </div>
+    <div class="info-item">
+      <div class="info-label">학년</div>
+      <div class="info-value"><textarea class="autogrow" placeholder="예: 3학년" data-field="grade"></textarea></div>
+    </div>
+    <div class="info-item">
+      <div class="info-label">기간</div>
+      <div class="info-value"><textarea class="autogrow" placeholder="예: 3월 2주 ~ 4월 1주" data-field="period"></textarea></div>
+    </div>
+    <div class="info-item">
+      <div class="info-label">협력팀원</div>
+      <div class="info-value"><textarea class="autogrow" placeholder="팀원 이름" data-field="team"></textarea></div>
+    </div>
+    <div class="info-item full">
+      <div class="info-label">프로젝트/단원명</div>
+      <div class="info-value"><textarea class="autogrow" placeholder="프로젝트 또는 단원 이름 입력" data-field="project-name"></textarea></div>
+    </div>
+    <div class="info-item full">
+      <div class="info-label">관련 핵심역량</div>
+      <div class="info-value"><textarea class="autogrow" placeholder="공감소통 / 창의융합 / 자기관리 / 공동체 (대구 4대)" data-field="competency"></textarea></div>
+    </div>
+  </div>
+
+  <div class="ai-tip" style="background:#f0f0ff; border-left-color:#5c6bc0; color:#3a3a6a;">
+    <span><b>📘 대구미래역량</b>&nbsp; 공감소통·창의융합·자기관리·공동체 — 대구 4대 핵심역량에 대한 배경지식과 상세 내용을 확인하세요.</span>
+    <a class="nlm-link" style="background:linear-gradient(135deg,#5c6bc0,#7986cb); box-shadow:0 1px 4px rgba(92,107,192,0.3);" href="https://dge0110-my.sharepoint.com/:p:/g/personal/plusiam_o365_dg-gamcheon_es_kr/IQD9wso7M5-dS5qSfjfw_xQgAZoIqph_RDWTrA3wMgck0EE?e=rudY6B" target="_blank" rel="noopener">📘 역량 자료 열기</a>
+  </div>
+
+  <div class="hint-box">💡 성취기준 코드란? [4도02-01] = 4학년, 도덕, 02번째 영역, 01번 기준. 융합 프로젝트는 2개 이상 교과의 성취기준을 함께 씁니다.</div>
+  <div class="ai-tip"><span><b>🤖 NotebookLM</b>&nbsp; 교육과정 문서를 업로드한 뒤, '초3 가족에 관한 도덕과 성취기준 찾아줘'처럼 질문하면 관련 성취기준을 빠르게 검색할 수 있습니다.</span><a class="nlm-link" href="https://notebooklm.google.com/notebook/bd163358-a9d5-45f2-8007-5eacab2f2dd4" target="_blank" rel="noopener">📒 NotebookLM 열기</a></div>
+
+  <!-- ===== Stage 1 ===== -->
+  <div class="stage-header">
+    <div class="stage-badge badge-s1">1<br>단계</div>
+    <div class="stage-title s1">바라는 결과 확인</div>
+    <div class="stage-divider div-s1"></div>
+  </div>
+
+  <div class="sub-header">
+    <span class="sub-num num-s1">①</span>
+    <span class="sub-title">교육과정 분석 (교과별)</span>
+  </div>
+  <p class="desc-text">각 참여 교과의 핵심 아이디어와 내용요소를 교과별로 분해합니다.</p>
+
+  <table class="t-s1" id="curriculumTable">
+    <thead>
+      <tr>
+        <th style="width:11%">교과</th>
+        <th style="width:24%">핵심 아이디어<br>(영역 수준, 원문)</th>
+        <th style="width:21%">지식·이해<br>(Know)</th>
+        <th style="width:22%">과정·기능<br>(Do)</th>
+        <th style="width:22%">가치·태도<br>(Be)</th>
+      </tr>
+    </thead>
+    <tbody id="curriculumBody">
+      <tr>
+        <td><textarea class="autogrow" placeholder="도덕" data-field="cur-subj-1"></textarea></td>
+        <td><textarea class="autogrow" placeholder="핵심 아이디어 원문 입력" data-field="cur-idea-1"></textarea></td>
+        <td><textarea class="autogrow" placeholder="지식·이해 요소" data-field="cur-know-1"></textarea></td>
+        <td><textarea class="autogrow" placeholder="과정·기능 요소" data-field="cur-do-1"></textarea></td>
+        <td><textarea class="autogrow" placeholder="가치·태도 요소" data-field="cur-be-1"></textarea></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="table-actions no-print">
+    <button class="add-row-btn" onclick="addRow('curriculumBody', ['cur-subj','cur-idea','cur-know','cur-do','cur-be'], 5)">+ 교과 행 추가</button>
+  </div>
+  <div class="hint-box">💡 융합 프로젝트에서는 교과마다 핵심 아이디어와 내용요소가 다릅니다. 각 교과의 내용 체계표에서 해당 영역의 핵심 아이디어를 찾아 교과별로 기록하세요.</div>
+  <div class="ai-tip"><span><b>🤖 NotebookLM</b>&nbsp; '도덕 4학년 자기 존중 영역의 핵심 아이디어와 내용요소를 정리해줘'라고 교과별로 질문하면 한눈에 확인할 수 있습니다.</span><a class="nlm-link" href="https://notebooklm.google.com/notebook/bd163358-a9d5-45f2-8007-5eacab2f2dd4" target="_blank" rel="noopener">📒 NotebookLM 열기</a></div>
+
+  <!-- ===== Page 2 ===== -->
+  <div class="page-break"></div>
+  <div class="page-label">1단계 계속</div>
+
+  <div class="sub-header">
+    <span class="sub-num num-s1">②</span>
+    <span class="sub-title">개념 설계</span>
+  </div>
+
+  <table class="t-s1" style="margin-bottom:10px;">
+    <tbody>
+      <tr>
+        <td class="lens-th">매크로 개념<br><span style="font-weight:normal;font-size:8pt;">(= 개념적 렌즈)<br>대구 8대 / IB 7개</span></td>
+        <td class="lens-td"><textarea class="autogrow" placeholder="정체성 · 인과관계 · 기능 · 형태 · 변화 · 관점 · 상호작용 · 책임 — 위 목록에서 렌즈가 될 개념을 선택하세요" data-field="macro-concept"></textarea></td>
+      </tr>
+      <tr>
+        <td class="lens-th">마이크로 개념<br><span style="font-weight:normal;font-size:8pt;">(교과별 하위 개념)</span></td>
+        <td class="lens-td"><textarea class="autogrow" placeholder="예: 효, 우애, 존중, 배려" data-field="micro-concept"></textarea></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="hint-box">💡 개념의 위계: 매크로 개념(개념적 렌즈, 가장 추상적) → 마이크로 개념(교과별 하위 개념, 구체적)</div>
+  <div class="ai-tip"><span><b>🤖 NotebookLM</b>&nbsp; '이 성취기준들을 관통하는 상위 개념은 무엇일까?'라고 질문하면 매크로 개념(렌즈) 후보를 제안받을 수 있습니다.</span><a class="nlm-link" href="https://notebooklm.google.com/notebook/bd163358-a9d5-45f2-8007-5eacab2f2dd4" target="_blank" rel="noopener">📒 NotebookLM 열기</a></div>
+
+  <div class="sub-header" style="margin-top:20px;">
+    <span class="sub-num num-s1">③</span>
+    <span class="sub-title">중심 아이디어 + 핵심 질문 (단원 수준, 각 1개)</span>
+  </div>
+
+  <div class="input-line-wrap">
+    <label>중심 아이디어 (Central Idea) <span>— 단원 전체를 관통하는 최상위 일반화 1개</span></label>
+    <textarea class="autogrow" placeholder="예: 가족의 사랑과 행복은 책임 있는 표현을 통해 깊어진다." data-field="central-idea"></textarea>
+  </div>
+
+  <div class="input-line-wrap" style="margin-top:14px;">
+    <label>핵심 질문 (Overarching EQ) <span>— 단원 전체를 이끄는 포괄적 열린 질문 1개</span></label>
+    <textarea class="autogrow" placeholder="예: 가족에게 사랑을 표현하는 것이 왜 중요하며, 어떻게 할 수 있을까?" data-field="essential-question"></textarea>
+  </div>
+
+  <div class="hint-box" style="margin-top:10px;">💡 ③ 중심 아이디어·핵심 질문은 단원의 '큰 그림'입니다. ④ 스트랜드의 하위 아이디어·안내 질문이 이를 구체화합니다.</div>
+
+  <div class="sub-header" style="margin-top:20px;">
+    <span class="sub-num num-s1">④</span>
+    <span class="sub-title">스트랜드별 하위 아이디어 + 안내 질문</span>
+  </div>
+
+  <table class="t-s1" id="strandTable">
+    <thead>
+      <tr>
+        <th style="width:20%">스트랜드</th>
+        <th style="width:40%">하위 아이디어 (일반화)</th>
+        <th style="width:40%">안내 질문 (Guiding Questions)</th>
+      </tr>
+    </thead>
+    <tbody id="strandBody">
+      <tr>
+        <td class="strand-label"><textarea class="autogrow" placeholder="스트랜드 1&#10;(개념 형성)" data-field="strand-name-1" style="text-align:center;font-weight:700;color:#B87333;min-height:60px;"></textarea></td>
+        <td><textarea class="autogrow" placeholder="하위 아이디어(일반화) 입력" data-field="strand-idea-1" style="min-height:60px;"></textarea></td>
+        <td><textarea class="autogrow" placeholder="안내 질문 2~4개 입력" data-field="strand-q-1" style="min-height:60px;"></textarea></td>
+      </tr>
+      <tr>
+        <td class="strand-label"><textarea class="autogrow" placeholder="스트랜드 2&#10;(표현 확장)" data-field="strand-name-2" style="text-align:center;font-weight:700;color:#B87333;min-height:60px;"></textarea></td>
+        <td><textarea class="autogrow" placeholder="하위 아이디어(일반화) 입력" data-field="strand-idea-2" style="min-height:60px;"></textarea></td>
+        <td><textarea class="autogrow" placeholder="안내 질문 2~4개 입력" data-field="strand-q-2" style="min-height:60px;"></textarea></td>
+      </tr>
+      <tr>
+        <td class="strand-label"><textarea class="autogrow" placeholder="스트랜드 3&#10;(행동 확장/전이)" data-field="strand-name-3" style="text-align:center;font-weight:700;color:#B87333;min-height:60px;"></textarea></td>
+        <td><textarea class="autogrow" placeholder="하위 아이디어(일반화) 입력" data-field="strand-idea-3" style="min-height:60px;"></textarea></td>
+        <td><textarea class="autogrow" placeholder="안내 질문 2~4개 입력" data-field="strand-q-3" style="min-height:60px;"></textarea></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="table-actions no-print">
+    <button class="add-row-btn" onclick="addStrandRow()">+ 스트랜드 추가</button>
+  </div>
+  <div class="hint-box">💡 각 스트랜드에 하위 일반화 1개 + 안내 질문(Topical EQ) 2~4개를 배치합니다. '개념 형성 → 표현 확장 → 행동 확장' 흐름을 참고하세요.</div>
+
+  <div class="concept-info no-break">
+    <h4>📌 탐구 질문과 안내 질문의 구분</h4>
+    <span class="item-title">▸ 탐구 질문 (Essential Question)</span>
+    <span class="indent">단원 전체를 관통하는 열린 질문. 정해진 정답이 없으며, 반복적으로 재방문하며 이해를 심화한다.</span>
+    <span class="item-title" style="margin-top:8px;">▸ 안내 질문 (Guiding Questions) — 에릭슨의 3유형</span>
+    <span class="indent">① <b>사실 질문 (Factual)</b>: 누가, 무엇을, 언제, 어디서? — 구체적 사실·지식 확인</span>
+    <span class="indent">② <b>개념 질문 (Conceptual)</b>: 왜? 어떻게? — 개념 간 관계를 탐색하여 일반화에 도달</span>
+    <span class="indent">③ <b>논쟁/추론 질문 (Debatable)</b>: 과연 ~할까? — 가치 판단·전이를 유도하는 열린 질문</span>
+  </div>
+
+  <!-- ===== Stage 2 ===== -->
+  <div class="page-break"></div>
+  <div class="page-label">2단계</div>
+
+  <div class="stage-header">
+    <div class="stage-badge badge-s2">2<br>단계</div>
+    <div class="stage-title s2">증거 결정</div>
+    <div class="stage-divider div-s2"></div>
+  </div>
+
+  <div class="sub-header">
+    <span class="sub-num num-s2">⑤</span>
+    <span class="sub-title">GRASPS 수행과제</span>
+  </div>
+
+  <table class="t-s2">
+    <thead>
+      <tr>
+        <th style="width:7%">요소</th>
+        <th style="width:20%">의미</th>
+        <th style="width:73%">내용</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="grasps-letter">G</td>
+        <td class="grasps-meaning">목표/도전 과제</td>
+        <td><textarea class="autogrow" placeholder="학생들이 달성해야 할 목표 또는 도전 과제" data-field="grasps-g"></textarea></td>
+      </tr>
+      <tr>
+        <td class="grasps-letter">R</td>
+        <td class="grasps-meaning">학생의 역할</td>
+        <td><textarea class="autogrow" placeholder="학생이 맡게 되는 역할" data-field="grasps-r"></textarea></td>
+      </tr>
+      <tr>
+        <td class="grasps-letter">A</td>
+        <td class="grasps-meaning">대상/청중</td>
+        <td><textarea class="autogrow" placeholder="결과물을 공유할 대상" data-field="grasps-a"></textarea></td>
+      </tr>
+      <tr>
+        <td class="grasps-letter">S</td>
+        <td class="grasps-meaning">실제적 맥락/상황</td>
+        <td><textarea class="autogrow" placeholder="실제적인 상황 또는 시나리오" data-field="grasps-s1"></textarea></td>
+      </tr>
+      <tr>
+        <td class="grasps-letter">P</td>
+        <td class="grasps-meaning">산출물/수행</td>
+        <td><textarea class="autogrow" placeholder="만들어야 할 산출물 또는 수행" data-field="grasps-p"></textarea></td>
+      </tr>
+      <tr>
+        <td class="grasps-letter">S</td>
+        <td class="grasps-meaning">평가 준거</td>
+        <td><textarea class="autogrow" placeholder="평가의 기준과 준거" data-field="grasps-s2"></textarea></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="hint-box">💡 수행과제는 핵심 아이디어의 이해를 '전이'하여 드러낼 수 있어야 합니다. 단순 암기로 해결되는 과제는 수행과제가 아닙니다.</div>
+
+  <div class="sub-header" style="margin-top:20px;">
+    <span class="sub-num num-s2">⑥</span>
+    <span class="sub-title">루브릭</span>
+  </div>
+
+  <table class="t-s2" id="rubricTable">
+    <thead>
+      <tr>
+        <th style="width:34%">평가 요소</th>
+        <th style="width:22%">잘함 ★★★</th>
+        <th style="width:22%">보통 ★★</th>
+        <th style="width:22%">노력 요함 ★</th>
+      </tr>
+    </thead>
+    <tbody id="rubricBody">
+      <tr>
+        <td><textarea class="autogrow" placeholder="평가 요소 1" data-field="rubric-item-1"></textarea></td>
+        <td><textarea class="autogrow" placeholder="잘함 기준" data-field="rubric-good-1"></textarea></td>
+        <td><textarea class="autogrow" placeholder="보통 기준" data-field="rubric-avg-1"></textarea></td>
+        <td><textarea class="autogrow" placeholder="노력 요함 기준" data-field="rubric-low-1"></textarea></td>
+      </tr>
+      <tr>
+        <td><textarea class="autogrow" placeholder="평가 요소 2" data-field="rubric-item-2"></textarea></td>
+        <td><textarea class="autogrow" placeholder="잘함 기준" data-field="rubric-good-2"></textarea></td>
+        <td><textarea class="autogrow" placeholder="보통 기준" data-field="rubric-avg-2"></textarea></td>
+        <td><textarea class="autogrow" placeholder="노력 요함 기준" data-field="rubric-low-2"></textarea></td>
+      </tr>
+      <tr>
+        <td><textarea class="autogrow" placeholder="평가 요소 3" data-field="rubric-item-3"></textarea></td>
+        <td><textarea class="autogrow" placeholder="잘함 기준" data-field="rubric-good-3"></textarea></td>
+        <td><textarea class="autogrow" placeholder="보통 기준" data-field="rubric-avg-3"></textarea></td>
+        <td><textarea class="autogrow" placeholder="노력 요함 기준" data-field="rubric-low-3"></textarea></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="table-actions no-print">
+    <button class="add-row-btn" onclick="addRow('rubricBody', ['rubric-item','rubric-good','rubric-avg','rubric-low'], 4)">+ 평가 요소 추가</button>
+  </div>
+  <div class="hint-box">💡 루브릭의 평가 요소는 수행과제의 준거(S)에서 도출합니다. 지식·이해(Know) / 과정·기능(Do) / 가치·태도(Be)를 고르게 반영하세요.</div>
+
+  <!-- ===== Stage 3 ===== -->
+  <div class="page-break"></div>
+  <div class="page-label">3단계</div>
+
+  <div class="stage-header">
+    <div class="stage-badge badge-s3">3<br>단계</div>
+    <div class="stage-title s3">학습 경험 계획</div>
+    <div class="stage-divider div-s3"></div>
+  </div>
+
+  <div class="sub-header">
+    <span class="sub-num num-s3">⑦</span>
+    <span class="sub-title">단원 학습 흐름</span>
+  </div>
+  <p class="desc-text">스트랜드별 주요 활동과 안내 질문을 기록하세요.</p>
+
+  <table class="t-s3" id="flowTable">
+    <thead>
+      <tr>
+        <th style="width:9%">차시</th>
+        <th style="width:18%">스트랜드<br>(주제명)</th>
+        <th style="width:36%">주요 활동</th>
+        <th style="width:25%">안내 질문</th>
+        <th style="width:12%">비고</th>
+      </tr>
+    </thead>
+    <tbody id="flowBody">
+      <tr>
+        <td><textarea class="autogrow" placeholder="1" data-field="flow-h-1" style="text-align:center;min-height:56px;"></textarea></td>
+        <td class="strand-label"><textarea class="autogrow" placeholder="스트랜드 1" data-field="flow-strand-1" style="text-align:center;font-weight:700;color:#B87333;min-height:56px;"></textarea></td>
+        <td><textarea class="autogrow" placeholder="주요 활동 입력" data-field="flow-act-1" style="min-height:56px;"></textarea></td>
+        <td><textarea class="autogrow" placeholder="안내 질문" data-field="flow-q-1" style="min-height:56px;"></textarea></td>
+        <td><textarea class="autogrow" placeholder="" data-field="flow-note-1" style="min-height:56px;"></textarea></td>
+      </tr>
+      <tr>
+        <td><textarea class="autogrow" placeholder="2" data-field="flow-h-2" style="text-align:center;min-height:56px;"></textarea></td>
+        <td><textarea class="autogrow" placeholder="" data-field="flow-strand-2" style="min-height:56px;"></textarea></td>
+        <td><textarea class="autogrow" placeholder="주요 활동 입력" data-field="flow-act-2" style="min-height:56px;"></textarea></td>
+        <td><textarea class="autogrow" placeholder="안내 질문" data-field="flow-q-2" style="min-height:56px;"></textarea></td>
+        <td><textarea class="autogrow" placeholder="" data-field="flow-note-2" style="min-height:56px;"></textarea></td>
+      </tr>
+      <tr>
+        <td><textarea class="autogrow" placeholder="3" data-field="flow-h-3" style="text-align:center;min-height:56px;"></textarea></td>
+        <td class="strand-label"><textarea class="autogrow" placeholder="스트랜드 2" data-field="flow-strand-3" style="text-align:center;font-weight:700;color:#B87333;min-height:56px;"></textarea></td>
+        <td><textarea class="autogrow" placeholder="주요 활동 입력" data-field="flow-act-3" style="min-height:56px;"></textarea></td>
+        <td><textarea class="autogrow" placeholder="안내 질문" data-field="flow-q-3" style="min-height:56px;"></textarea></td>
+        <td><textarea class="autogrow" placeholder="" data-field="flow-note-3" style="min-height:56px;"></textarea></td>
+      </tr>
+      <tr>
+        <td><textarea class="autogrow" placeholder="4" data-field="flow-h-4" style="text-align:center;min-height:56px;"></textarea></td>
+        <td><textarea class="autogrow" placeholder="" data-field="flow-strand-4" style="min-height:56px;"></textarea></td>
+        <td><textarea class="autogrow" placeholder="주요 활동 입력" data-field="flow-act-4" style="min-height:56px;"></textarea></td>
+        <td><textarea class="autogrow" placeholder="안내 질문" data-field="flow-q-4" style="min-height:56px;"></textarea></td>
+        <td><textarea class="autogrow" placeholder="" data-field="flow-note-4" style="min-height:56px;"></textarea></td>
+      </tr>
+      <tr>
+        <td><textarea class="autogrow" placeholder="5" data-field="flow-h-5" style="text-align:center;min-height:56px;"></textarea></td>
+        <td class="strand-label"><textarea class="autogrow" placeholder="스트랜드 3" data-field="flow-strand-5" style="text-align:center;font-weight:700;color:#B87333;min-height:56px;"></textarea></td>
+        <td><textarea class="autogrow" placeholder="주요 활동 입력" data-field="flow-act-5" style="min-height:56px;"></textarea></td>
+        <td><textarea class="autogrow" placeholder="안내 질문" data-field="flow-q-5" style="min-height:56px;"></textarea></td>
+        <td><textarea class="autogrow" placeholder="" data-field="flow-note-5" style="min-height:56px;"></textarea></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="table-actions no-print">
+    <button class="add-row-btn" onclick="addFlowRow()">+ 차시 행 추가</button>
+  </div>
+  <div class="hint-box">💡 일반화(개념 정리) → 전이(새로운 상황 적용)는 반드시 구분하세요. 수행과제는 '전이하기' 단계에 위치합니다.</div>
+
+  <!-- ===== Page 5 ===== -->
+  <div class="page-break"></div>
+  <div class="page-label">3단계 계속</div>
+
+  <div class="sub-header">
+    <span class="sub-num num-s3">⑧</span>
+    <span class="sub-title">WHERETO 자기 점검 (Wiggins &amp; McTighe)</span>
+  </div>
+  <p class="desc-text">학습 경험이 아래 7가지 요소를 충족하는지 점검하세요.</p>
+
+  <table class="t-s3">
+    <thead>
+      <tr>
+        <th style="width:6%">요소</th>
+        <th style="width:20%">의미</th>
+        <th style="width:44%">점검 질문</th>
+        <th style="width:30%">메모</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="whereto-letter">W</td>
+        <td class="whereto-meaning"><b>Where &amp; Why</b><br><span style="font-size:8pt;color:var(--gray-500);">(방향과 이유)</span></td>
+        <td style="padding:8px 10px;font-size:9pt;vertical-align:middle;">학생이 단원의 방향·목표·평가 기준을 알고 있는가?<br>'왜 이것을 배우는가'를 이해하는가?</td>
+        <td><textarea class="autogrow" placeholder="해당 차시 / 메모" data-field="whereto-w" style="min-height:56px;"></textarea></td>
+      </tr>
+      <tr>
+        <td class="whereto-letter">H</td>
+        <td class="whereto-meaning"><b>Hook &amp; Hold</b><br><span style="font-size:8pt;color:var(--gray-500);">(몰입 유도)</span></td>
+        <td style="padding:8px 10px;font-size:9pt;vertical-align:middle;">도입에서 학생의 흥미·호기심을 끌어내는 활동이 있는가?<br>학습 전반에 걸쳐 몰입이 유지되는가?</td>
+        <td><textarea class="autogrow" placeholder="해당 차시 / 메모" data-field="whereto-h" style="min-height:56px;"></textarea></td>
+      </tr>
+      <tr>
+        <td class="whereto-letter">E<sub>1</sub></td>
+        <td class="whereto-meaning"><b>Explore &amp; Experience</b><br><span style="font-size:8pt;color:var(--gray-500);">(탐색·경험)</span></td>
+        <td style="padding:8px 10px;font-size:9pt;vertical-align:middle;">핵심 아이디어를 학생 스스로 탐구·경험할 기회가 있는가?</td>
+        <td><textarea class="autogrow" placeholder="해당 차시 / 메모" data-field="whereto-e1" style="min-height:56px;"></textarea></td>
+      </tr>
+      <tr>
+        <td class="whereto-letter">R</td>
+        <td class="whereto-meaning"><b>Reflect, Rethink, Revise</b><br><span style="font-size:8pt;color:var(--gray-500);">(성찰·재고·수정)</span></td>
+        <td style="padding:8px 10px;font-size:9pt;vertical-align:middle;">학생이 자신의 이해를 돌아보고 수정할 기회가 있는가?<br>오개념을 점검하고 재사고하는 활동이 포함되어 있는가?</td>
+        <td><textarea class="autogrow" placeholder="해당 차시 / 메모" data-field="whereto-r" style="min-height:56px;"></textarea></td>
+      </tr>
+      <tr>
+        <td class="whereto-letter">E<sub>2</sub></td>
+        <td class="whereto-meaning"><b>Evaluate</b><br><span style="font-size:8pt;color:var(--gray-500);">(자기 평가)</span></td>
+        <td style="padding:8px 10px;font-size:9pt;vertical-align:middle;">학생이 자신의 학습 과정과 결과를 스스로 평가할 수 있는가?<br>형성 평가가 적절히 배치되어 있는가?</td>
+        <td><textarea class="autogrow" placeholder="해당 차시 / 메모" data-field="whereto-e2" style="min-height:56px;"></textarea></td>
+      </tr>
+      <tr>
+        <td class="whereto-letter">T</td>
+        <td class="whereto-meaning"><b>Tailored</b><br><span style="font-size:8pt;color:var(--gray-500);">(개별화)</span></td>
+        <td style="padding:8px 10px;font-size:9pt;vertical-align:middle;">학생의 개인차(흥미·수준·학습 양식)에 따라<br>활동이나 자료가 차별화되어 있는가?</td>
+        <td><textarea class="autogrow" placeholder="해당 차시 / 메모" data-field="whereto-t" style="min-height:56px;"></textarea></td>
+      </tr>
+      <tr>
+        <td class="whereto-letter">O</td>
+        <td class="whereto-meaning"><b>Organized</b><br><span style="font-size:8pt;color:var(--gray-500);">(조직·배열)</span></td>
+        <td style="padding:8px 10px;font-size:9pt;vertical-align:middle;">학습 활동이 이해의 심화를 위해 최적의 순서로 배열되어 있는가?<br>(단순 시간순이 아닌 개념적 흐름 중심)</td>
+        <td><textarea class="autogrow" placeholder="해당 차시 / 메모" data-field="whereto-o" style="min-height:56px;"></textarea></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="hint-box">💡 WHERETO는 위긴스와 맥타이의 '이해중심교육과정(UbD)' 3단계에서 학습 경험을 설계·점검하는 틀입니다.</div>
+
+  <!-- ===== KPT ===== -->
+  <div class="sub-header" style="margin-top:24px;">
+    <span class="sub-num" style="background:var(--gray-700);">✎</span>
+    <span class="sub-title">사후 팀 성찰 (KPT)</span>
+  </div>
+
+  <table class="t-kpt">
+    <thead>
+      <tr>
+        <th style="width:33%;">Keep<br><span style="font-weight:normal;font-size:8pt;">잘 된 점</span></th>
+        <th style="width:34%;">Problem<br><span style="font-weight:normal;font-size:8pt;">보완할 점</span></th>
+        <th style="width:33%;">Try<br><span style="font-weight:normal;font-size:8pt;">다음 시도</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><textarea class="autogrow" placeholder="잘 된 점을 기록하세요" data-field="kpt-keep" style="min-height:120px;"></textarea></td>
+        <td><textarea class="autogrow" placeholder="보완할 점을 기록하세요" data-field="kpt-problem" style="min-height:120px;"></textarea></td>
+        <td><textarea class="autogrow" placeholder="다음에 시도할 것을 기록하세요" data-field="kpt-try" style="min-height:120px;"></textarea></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ===== Footer ===== -->
+  <div class="footer-bar">
+    <span class="left">룰루랄라 한기쌤</span>
+    <span class="right">개념기반수업설계 AI로 날개를 달다</span>
+  </div>
+
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== Row Counter =====
+let rowCounters = {};
+
+// ===== Auto-grow textareas =====
+function autoGrow(el) {
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
+}
+
+document.addEventListener('input', function(e) {
+  if (e.target.tagName === 'TEXTAREA') {
+    autoGrow(e.target);
+    scheduleSave();
+  }
+});
+
+// Initialize all textareas
+function initAutoGrow() {
+  document.querySelectorAll('textarea').forEach(el => {
+    autoGrow(el);
+    el.addEventListener('focus', () => autoGrow(el));
+  });
+}
+
+// ===== Toast =====
+function showToast(msg, duration = 2500) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), duration);
+}
+
+// ===== Add Generic Row =====
+function addRow(tbodyId, prefixes, colCount) {
+  const tbody = document.getElementById(tbodyId);
+  const rowNum = tbody.rows.length + 1;
+  const tr = document.createElement('tr');
+
+  for (let i = 0; i < colCount; i++) {
+    const td = document.createElement('td');
+    if (i === colCount - 1 && tbodyId === 'basicInfoBody') {
+      td.className = 'cell-center';
+    }
+    const ta = document.createElement('textarea');
+    ta.className = 'autogrow';
+    ta.dataset.field = `${prefixes[i]}-${rowNum}`;
+    ta.placeholder = '';
+    if (i === colCount - 1 && tbodyId === 'basicInfoBody') {
+      ta.style.textAlign = 'center';
+    }
+    td.appendChild(ta);
+    tr.appendChild(td);
+  }
+
+  tbody.appendChild(tr);
+  initAutoGrow();
+  showToast('행이 추가되었습니다');
+}
+
+// ===== Add Strand Row =====
+function addStrandRow() {
+  const tbody = document.getElementById('strandBody');
+  const num = tbody.rows.length + 1;
+  const tr = document.createElement('tr');
+
+  const tdName = document.createElement('td');
+  tdName.className = 'strand-label';
+  const taName = document.createElement('textarea');
+  taName.className = 'autogrow';
+  taName.placeholder = `스트랜드 ${num}`;
+  taName.dataset.field = `strand-name-${num}`;
+  taName.style.cssText = 'text-align:center;font-weight:700;color:#B87333;min-height:60px;';
+  tdName.appendChild(taName);
+  tr.appendChild(tdName);
+
+  const tdIdea = document.createElement('td');
+  const taIdea = document.createElement('textarea');
+  taIdea.className = 'autogrow';
+  taIdea.placeholder = '하위 아이디어(일반화) 입력';
+  taIdea.dataset.field = `strand-idea-${num}`;
+  taIdea.style.minHeight = '60px';
+  tdIdea.appendChild(taIdea);
+  tr.appendChild(tdIdea);
+
+  const tdQ = document.createElement('td');
+  const taQ = document.createElement('textarea');
+  taQ.className = 'autogrow';
+  taQ.placeholder = '안내 질문 2~4개 입력';
+  taQ.dataset.field = `strand-q-${num}`;
+  taQ.style.minHeight = '60px';
+  tdQ.appendChild(taQ);
+  tr.appendChild(tdQ);
+
+  tbody.appendChild(tr);
+  initAutoGrow();
+  showToast('스트랜드가 추가되었습니다');
+}
+
+// ===== Add Flow Row =====
+function addFlowRow() {
+  const tbody = document.getElementById('flowBody');
+  const num = tbody.rows.length + 1;
+  const tr = document.createElement('tr');
+
+  const fields = [
+    { prefix: 'flow-h', placeholder: `${num}`, style: 'text-align:center;min-height:56px;' },
+    { prefix: 'flow-strand', placeholder: '', style: 'min-height:56px;' },
+    { prefix: 'flow-act', placeholder: '주요 활동 입력', style: 'min-height:56px;' },
+    { prefix: 'flow-q', placeholder: '안내 질문', style: 'min-height:56px;' },
+    { prefix: 'flow-note', placeholder: '', style: 'min-height:56px;' }
+  ];
+
+  fields.forEach(f => {
+    const td = document.createElement('td');
+    const ta = document.createElement('textarea');
+    ta.className = 'autogrow';
+    ta.placeholder = f.placeholder;
+    ta.dataset.field = `${f.prefix}-${num}`;
+    ta.style.cssText = f.style;
+    td.appendChild(ta);
+    tr.appendChild(td);
+  });
+
+  tbody.appendChild(tr);
+  initAutoGrow();
+  showToast('차시가 추가되었습니다');
+}
+
+// ===== Local Storage Save/Load =====
+const STORAGE_KEY = 'cbci-web-worksheet-v1';
+let saveTimer = null;
+
+function scheduleSave() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveData, 1000);
+  document.getElementById('saveIcon').textContent = '⏳';
+  document.getElementById('saveText').textContent = '저장 중...';
+  document.getElementById('saveStatus').classList.remove('saved');
+}
+
+function saveData() {
+  const data = {};
+  document.querySelectorAll('textarea[data-field]').forEach(el => {
+    data[el.dataset.field] = el.value;
+  });
+  // Save checkbox states
+  document.querySelectorAll('input[type="checkbox"][data-field]').forEach(el => {
+    data[el.dataset.field] = el.checked;
+  });
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    document.getElementById('saveIcon').textContent = '✅';
+    document.getElementById('saveText').textContent = '자동 저장됨';
+    document.getElementById('saveStatus').classList.add('saved');
+  } catch (e) {
+    document.getElementById('saveIcon').textContent = '⚠️';
+    document.getElementById('saveText').textContent = '저장 실패';
+  }
+}
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    Object.entries(data).forEach(([field, value]) => {
+      const el = document.querySelector(`textarea[data-field="${field}"]`);
+      if (el) {
+        el.value = value;
+        autoGrow(el);
+      }
+      const cb = document.querySelector(`input[data-field="${field}"]`);
+      if (cb) cb.checked = value;
+    });
+    document.getElementById('saveIcon').textContent = '✅';
+    document.getElementById('saveText').textContent = '불러오기 완료';
+    document.getElementById('saveStatus').classList.add('saved');
+  } catch (e) {
+    console.warn('데이터 불러오기 실패:', e);
+  }
+}
+
+// ===== Reset =====
+function resetAll() {
+  if (!confirm('모든 입력 내용을 초기화하시겠습니까?\n이 작업은 되돌릴 수 없습니다.')) return;
+  document.querySelectorAll('textarea').forEach(el => {
+    el.value = '';
+    autoGrow(el);
+  });
+  document.querySelectorAll('input[type="checkbox"]').forEach(el => el.checked = false);
+  localStorage.removeItem(STORAGE_KEY);
+  document.getElementById('saveIcon').textContent = '💾';
+  document.getElementById('saveText').textContent = '초기화됨';
+  document.getElementById('saveStatus').classList.remove('saved');
+  showToast('모든 내용이 초기화되었습니다');
+}
+
+// ===== Download HTML =====
+function downloadHTML() {
+  // Clone the document
+  const clone = document.documentElement.cloneNode(true);
+
+  // Remove toolbar and no-print elements from clone
+  clone.querySelectorAll('.toolbar, .no-print, .toast').forEach(el => el.remove());
+
+  // Replace textareas with their values as styled divs
+  clone.querySelectorAll('textarea').forEach(ta => {
+    const div = document.createElement('div');
+    div.style.cssText = ta.style.cssText || '';
+    div.style.padding = '8px 10px';
+    div.style.fontSize = '9.5pt';
+    div.style.lineHeight = '1.65';
+    div.style.whiteSpace = 'pre-wrap';
+    div.style.wordBreak = 'break-word';
+    div.style.minHeight = ta.style.minHeight || '48px';
+
+    // Get current value from the original document
+    const field = ta.dataset.field;
+    const originalTa = document.querySelector(`textarea[data-field="${field}"]`);
+    const val = originalTa ? originalTa.value : ta.value;
+
+    if (val) {
+      div.textContent = val;
+      div.style.color = '#1a1a1a';
+    } else {
+      div.textContent = ta.placeholder || '';
+      div.style.color = '#999';
+      div.style.fontStyle = 'italic';
+    }
+    ta.parentNode.replaceChild(div, ta);
+  });
+
+  // Replace checkboxes
+  clone.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    const span = document.createElement('span');
+    const field = cb.dataset.field;
+    const originalCb = document.querySelector(`input[data-field="${field}"]`);
+    span.textContent = (originalCb && originalCb.checked) ? '☑' : '☐';
+    span.style.fontSize = '14px';
+    cb.parentNode.replaceChild(span, cb);
+  });
+
+  const html = '<!DOCTYPE html>\n<html lang="ko">\n' + clone.outerHTML + '\n</html>';
+
+  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+
+  const projectName = document.querySelector('textarea[data-field="project-name"]')?.value || '개념기반_프로젝트_설계';
+  const date = new Date().toISOString().slice(0, 10);
+  a.download = `${projectName.replace(/\s+/g, '_')}_${date}.html`;
+  a.href = url;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('HTML 파일이 다운로드되었습니다');
+}
+
+// ===== Print / PDF =====
+function printPDF() {
+  window.print();
+}
+
+// ===== Init =====
+window.addEventListener('DOMContentLoaded', () => {
+  loadData();
+  initAutoGrow();
+});
+</script>
+
+</body>
+</html>

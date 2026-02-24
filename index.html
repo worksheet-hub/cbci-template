@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개념 기반 탐구 프로젝트 설계 워크시트</title>
+<style>
+  /* ===== 인쇄 설정 ===== */
+  @page {
+    size: A4;
+    margin: 15mm 18mm 15mm 18mm;
+  }
+  @media print {
+    .page-break { page-break-before: always; }
+    .no-break { page-break-inside: avoid; }
+    body { font-size: 9.5pt; background: #fff !important; }
+    .hint-box, .ai-tip, .concept-info { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .stage-badge { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .sub-num { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    thead { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .footer-bar { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+
+  /* ===== 기본 ===== */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Malgun Gothic', '맑은 고딕', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+    font-size: 9.5pt;
+    color: #1a1a1a;
+    line-height: 1.65;
+    padding: 24px 28px;
+    max-width: 820px;
+    margin: 0 auto;
+    background: #fff;
+  }
+
+  /* ===== 표지 헤더 영역 ===== */
+  .doc-header {
+    border-top: 5px solid #2E75B6;
+    padding-top: 14px;
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .doc-header .corner-label {
+    position: absolute;
+    top: 16px;
+    right: 0;
+    font-size: 7.5pt;
+    color: #888;
+    font-style: italic;
+    letter-spacing: 0.3px;
+  }
+  .doc-header h1 {
+    font-size: 17pt;
+    font-weight: 900;
+    color: #1a3a5c;
+    letter-spacing: -0.5px;
+    margin-bottom: 5px;
+  }
+  .doc-header .subtitle-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 9pt;
+    color: #555;
+    flex-wrap: wrap;
+    padding-bottom: 12px;
+    border-bottom: 1.5px solid #dde4ef;
+  }
+  .stage-pill {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 8.5pt;
+    font-weight: bold;
+    letter-spacing: 0.2px;
+  }
+  .pill-s1 { background: #2E75B6; color: #fff; }
+  .pill-s2 { background: #2E8B6E; color: #fff; }
+  .pill-s3 { background: #B87333; color: #fff; }
+  .arrow-sep { color: #aaa; font-size: 9pt; }
+
+  /* ===== 단계 헤더 ===== */
+  .stage-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 22px 0 10px 0;
+  }
+  .stage-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    font-size: 8pt;
+    font-weight: bold;
+    color: #fff;
+    flex-shrink: 0;
+    line-height: 1.2;
+    text-align: center;
+  }
+  .badge-s1 { background: #2E75B6; }
+  .badge-s2 { background: #2E8B6E; }
+  .badge-s3 { background: #B87333; }
+  .stage-title {
+    font-size: 13.5pt;
+    font-weight: 900;
+    letter-spacing: -0.3px;
+  }
+  .stage-title.s1 { color: #2E75B6; }
+  .stage-title.s2 { color: #2E8B6E; }
+  .stage-title.s3 { color: #B87333; }
+  .stage-divider {
+    flex: 1;
+    height: 2.5px;
+    border-radius: 2px;
+  }
+  .div-s1 { background: linear-gradient(to right, #2E75B6, #e8f0fe); }
+  .div-s2 { background: linear-gradient(to right, #2E8B6E, #e6f4ee); }
+  .div-s3 { background: linear-gradient(to right, #B87333, #fbf0e4); }
+
+  /* ===== 소제목 ===== */
+  .sub-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 14px 0 7px 0;
+  }
+  .sub-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    font-size: 8pt;
+    font-weight: bold;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .num-s1 { background: #2E75B6; }
+  .num-s2 { background: #2E8B6E; }
+  .num-s3 { background: #B87333; }
+  .sub-title {
+    font-size: 11pt;
+    font-weight: bold;
+    color: #222;
+  }
+
+  /* ===== 기본 정보 그리드 ===== */
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid #c8d4e8;
+    border-radius: 6px;
+    overflow: hidden;
+    margin: 8px 0;
+  }
+  .info-item {
+    display: flex;
+    border-bottom: 1px solid #dde4ef;
+    border-right: 1px solid #dde4ef;
+    min-height: 26px;
+  }
+  .info-item:nth-child(2n) { border-right: none; }
+  .info-item:nth-last-child(-n+2) { border-bottom: none; }
+  .info-label {
+    background: #EEF3FA;
+    font-weight: bold;
+    font-size: 8.5pt;
+    color: #2E75B6;
+    padding: 5px 9px;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    min-width: 88px;
+  }
+  .info-value {
+    padding: 5px 9px;
+    font-size: 8.5pt;
+    color: #777;
+    font-style: italic;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    border-left: 1px solid #dde4ef;
+  }
+  .info-item.full { grid-column: 1 / -1; border-right: none; }
+
+  /* ===== 테이블 ===== */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 6px 0 4px 0;
+    font-size: 9pt;
+  }
+  th {
+    font-weight: bold;
+    text-align: center;
+    font-size: 8.5pt;
+    padding: 6px 7px;
+    vertical-align: middle;
+  }
+  td {
+    border: 1px solid #c8cdd6;
+    padding: 6px 8px;
+    vertical-align: top;
+  }
+  th { border: 1px solid #b0b8c8; }
+
+  .t-s1 th { background: #dce8f5; color: #1a3a5c; }
+  .t-s1 td { border-color: #c0cfe8; }
+  .t-s2 th { background: #d4ede4; color: #1a4a38; }
+  .t-s2 td { border-color: #b8d8c8; }
+  .t-s3 th { background: #f5e8d4; color: #5a3010; }
+  .t-s3 td { border-color: #e0c8a8; }
+  .t-kpt th { background: #f0f0f0; color: #333; }
+  .t-kpt td { border-color: #ccc; height: 90px; }
+
+  .gray-italic { color: #999; font-style: italic; }
+  .cell-center { text-align: center; vertical-align: middle; }
+
+  /* ===== GRASPS 글자 ===== */
+  .grasps-letter {
+    font-weight: 900;
+    font-size: 14pt;
+    color: #2E8B6E;
+    text-align: center;
+    vertical-align: middle;
+  }
+  .whereto-letter {
+    font-weight: 900;
+    font-size: 13pt;
+    color: #B87333;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  /* ===== 입력칸 ===== */
+  .input-line {
+    border-bottom: 1px dashed #bbb;
+    padding: 5px 4px;
+    margin: 3px 0;
+    min-height: 26px;
+    font-size: 9pt;
+    color: #999;
+    font-style: italic;
+  }
+  .input-label {
+    font-weight: bold;
+    font-style: normal;
+    color: #333;
+    margin-right: 4px;
+  }
+
+  /* ===== 안내 박스 ===== */
+  .hint-box {
+    background: #f0f5fc;
+    border-left: 3.5px solid #2E75B6;
+    border-radius: 0 5px 5px 0;
+    padding: 7px 12px;
+    font-size: 8.5pt;
+    color: #3a4a6a;
+    margin: 6px 0 4px 0;
+  }
+  .ai-tip {
+    background: #fffbec;
+    border-left: 3.5px solid #e0a800;
+    border-radius: 0 5px 5px 0;
+    padding: 7px 12px;
+    font-size: 8.5pt;
+    color: #5a4800;
+    font-style: italic;
+    margin: 4px 0 8px 0;
+  }
+  .ai-tip b { color: #7a5f00; font-style: normal; }
+
+  /* ===== 개념 정보 박스 ===== */
+  .concept-info {
+    background: #f5f8fd;
+    border: 1px solid #c8d8ee;
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin: 8px 0;
+    font-size: 8.5pt;
+  }
+  .concept-info h4 {
+    color: #2E75B6;
+    font-size: 9.5pt;
+    margin-bottom: 7px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .concept-info .item-title {
+    font-weight: bold;
+    color: #333;
+    margin-top: 6px;
+    display: block;
+  }
+  .concept-info .indent {
+    padding-left: 14px;
+    color: #444;
+    margin: 2px 0;
+    display: block;
+  }
+
+  /* ===== 페이지 표시 ===== */
+  .page-label {
+    text-align: right;
+    font-size: 7.5pt;
+    color: #bbb;
+    margin-bottom: 4px;
+    font-style: italic;
+  }
+
+  /* ===== 안내문 ===== */
+  .desc-text {
+    font-size: 8.5pt;
+    color: #666;
+    font-style: italic;
+    margin: 4px 0 8px 4px;
+  }
+
+  /* ===== 개념 렌즈 표 ===== */
+  .lens-th {
+    background: #dce8f5;
+    color: #1a3a5c;
+    font-weight: bold;
+    font-size: 8.5pt;
+    padding: 7px 10px;
+    vertical-align: middle;
+    border: 1px solid #b0c4de;
+    width: 27%;
+  }
+  .lens-td {
+    border: 1px solid #c0cfe8;
+    padding: 8px 10px;
+    vertical-align: top;
+    font-size: 9pt;
+  }
+
+  /* ===== 푸터 ===== */
+  .footer-bar {
+    margin-top: 20px;
+    padding: 7px 14px;
+    background: #1a3a5c;
+    color: #fff;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 8pt;
+  }
+  .footer-bar .left { font-weight: bold; letter-spacing: 0.3px; }
+  .footer-bar .right { opacity: 0.75; font-style: italic; }
+
+  /* ===== 흐름 테이블 tall cell ===== */
+  .flow-td { height: 68px; vertical-align: top; }
+  .strand-center { text-align: center; vertical-align: middle; color: #aaa; font-style: italic; font-size: 8.5pt; }
+
+  /* ===== 체크박스 ===== */
+  .check-cell { text-align: left; vertical-align: top; }
+  .check-label { display: flex; align-items: flex-start; gap: 6px; margin-bottom: 4px; font-size: 8.5pt; }
+  .check-box { width: 13px; height: 13px; border: 1.5px solid #888; display: inline-block; flex-shrink: 0; margin-top: 2px; }
+  .whereto-row td { vertical-align: top; padding: 7px 8px; }
+
+  /* ===== 루브릭 ===== */
+  .rubric-td { height: 50px; vertical-align: top; }
+</style>
+</head>
+<body>
+
+<!-- ======== 표지 헤더 ======== -->
+<div class="doc-header">
+  <div class="corner-label">개념기반수업설계 AI로 날개를 달다</div>
+  <h1>개념 기반 탐구 프로젝트 설계 워크시트</h1>
+  <div class="subtitle-row">
+    <span>백워드 설계 3단계</span>
+    <span class="arrow-sep">:</span>
+    <span class="stage-pill pill-s1">1단계 바라는 결과</span>
+    <span class="arrow-sep">→</span>
+    <span class="stage-pill pill-s2">2단계 증거 결정</span>
+    <span class="arrow-sep">→</span>
+    <span class="stage-pill pill-s3">3단계 학습 경험</span>
+  </div>
+</div>
+
+<!-- ======== 기본 정보 ======== -->
+<div class="sub-header">
+  <span class="sub-title" style="color:#1a3a5c;">📋 기본 정보</span>
+</div>
+
+<table class="t-s1" style="margin-bottom:8px;">
+  <thead>
+    <tr>
+      <th style="width:14%">교과</th>
+      <th style="width:20%">성취기준 코드</th>
+      <th style="width:51%">성취기준 내용 (요약)</th>
+      <th style="width:15%">차시</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="gray-italic">도덕</td>
+      <td class="gray-italic">[4도02-01]</td>
+      <td class="gray-italic">효, 우애의 의미와 필요성을 이해하고…</td>
+      <td class="gray-italic cell-center">5</td>
+    </tr>
+    <tr style="height:32px"><td></td><td></td><td></td><td></td></tr>
+    <tr style="height:32px"><td></td><td></td><td></td><td></td></tr>
+    <tr style="height:32px"><td></td><td></td><td></td><td></td></tr>
+  </tbody>
+</table>
+
+<div class="info-grid">
+  <div class="info-item">
+    <div class="info-label">총 차시</div>
+    <div class="info-value">&nbsp;</div>
+  </div>
+  <div class="info-item">
+    <div class="info-label">학년</div>
+    <div class="info-value">&nbsp;</div>
+  </div>
+  <div class="info-item">
+    <div class="info-label">기간</div>
+    <div class="info-value">___월 ___주 ~ ___월 ___주</div>
+  </div>
+  <div class="info-item">
+    <div class="info-label">협력팀원</div>
+    <div class="info-value">&nbsp;</div>
+  </div>
+  <div class="info-item full">
+    <div class="info-label">프로젝트/단원명</div>
+    <div class="info-value">&nbsp;</div>
+  </div>
+  <div class="info-item full">
+    <div class="info-label">관련 핵심역량</div>
+    <div class="info-value">공감소통 &nbsp;/&nbsp; 창의융합 &nbsp;/&nbsp; 자기관리 &nbsp;/&nbsp; 공동체 &nbsp;(대구 4대)</div>
+  </div>
+</div>
+
+<div class="hint-box">💡 성취기준 코드란? [4도02-01] = 4학년, 도덕, 02번째 영역, 01번 기준. 융합 프로젝트는 2개 이상 교과의 성취기준을 함께 씁니다.</div>
+<div class="ai-tip"><b>🤖 NotebookLM</b>&nbsp; 교육과정 문서를 업로드한 뒤, '초3 가족에 관한 도덕과 성취기준 찾아줘'처럼 질문하면 관련 성취기준을 빠르게 검색할 수 있습니다.</div>
+
+<!-- ======== 1단계 ======== -->
+<div class="stage-header">
+  <div class="stage-badge badge-s1">1<br>단계</div>
+  <div class="stage-title s1">바라는 결과 확인</div>
+  <div class="stage-divider div-s1"></div>
+</div>
+
+<div class="sub-header">
+  <span class="sub-num num-s1">①</span>
+  <span class="sub-title">교육과정 분석 (교과별)</span>
+</div>
+<p class="desc-text">각 참여 교과의 핵심 아이디어(영역 수준, 국가 교육과정 내용 체계표 원문)와 내용요소를 교과별로 분해합니다.</p>
+
+<table class="t-s1">
+  <thead>
+    <tr>
+      <th style="width:11%">교과</th>
+      <th style="width:29%">핵심 아이디어<br>(영역 수준, 원문)</th>
+      <th style="width:20%">지식·이해<br>(Know)</th>
+      <th style="width:20%">과정·기능<br>(Do)</th>
+      <th style="width:20%">가치·태도<br>(Be)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="gray-italic">도덕</td>
+      <td class="gray-italic">예: 배려는 타인에 대한 관심과 공감을 기반으로 타인의 삶을 개선한다.</td>
+      <td class="gray-italic">예: 효와 우애의 의미</td>
+      <td class="gray-italic">예: 실천 계획 세우기</td>
+      <td class="gray-italic">예: 가족 사랑하는 마음</td>
+    </tr>
+    <tr style="height:58px"><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr style="height:58px"><td></td><td></td><td></td><td></td><td></td></tr>
+  </tbody>
+</table>
+<div class="hint-box">💡 융합 프로젝트에서는 교과마다 핵심 아이디어와 내용요소가 다릅니다. 각 교과의 내용 체계표에서 해당 영역의 핵심 아이디어를 찾아 교과별로 기록하세요.</div>
+<div class="ai-tip"><b>🤖 NotebookLM</b>&nbsp; '도덕 4학년 자기 존중 영역의 핵심 아이디어와 내용요소를 정리해줘'라고 교과별로 질문하면 한눈에 확인할 수 있습니다.</div>
+
+<!-- ======== 페이지 2 ======== -->
+<div class="page-break"></div>
+<div class="page-label">1단계 계속</div>
+
+<div class="sub-header">
+  <span class="sub-num num-s1">②</span>
+  <span class="sub-title">개념 설계</span>
+</div>
+
+<table class="t-s1" style="margin-bottom:8px;">
+  <tbody>
+    <tr>
+      <td class="lens-th">매크로 개념<br><span style="font-weight:normal;font-size:8pt;">(= 개념적 렌즈)<br>대구 8대 / IB 7개</span></td>
+      <td class="lens-td gray-italic">정체성 · 인과관계 · 기능 · 형태 · 변화 · 관점 · 상호작용 · 책임<br>→ 위 목록에서 단원의 렌즈가 될 개념을 <b style="color:#333">○</b> 표시하세요</td>
+    </tr>
+    <tr>
+      <td class="lens-th">마이크로 개념<br><span style="font-weight:normal;font-size:8pt;">(교과별 하위 개념)</span></td>
+      <td class="lens-td gray-italic">예: 효, 우애, 존중, 배려</td>
+    </tr>
+  </tbody>
+</table>
+<div class="hint-box">💡 개념의 위계: 매크로 개념(개념적 렌즈, 가장 추상적 — 대구 8대 또는 IB 7개에서 선택) → 마이크로 개념(교과별 하위 개념, 구체적)</div>
+<div class="ai-tip"><b>🤖 NotebookLM</b>&nbsp; '이 성취기준들을 관통하는 상위 개념은 무엇일까?'라고 질문하면 매크로 개념(렌즈) 후보를 제안받을 수 있습니다.</div>
+
+<div class="sub-header" style="margin-top:16px;">
+  <span class="sub-num num-s1">③</span>
+  <span class="sub-title">중심 아이디어 + 핵심 질문 (단원 수준, 각 1개)</span>
+</div>
+
+<div style="margin:6px 0 4px 0; font-size:9pt; font-weight:bold; color:#1a3a5c;">중심 아이디어 (Central Idea) <span style="font-weight:normal;color:#666;font-size:8.5pt;">— 단원 전체를 관통하는 최상위 일반화 1개</span></div>
+<div class="input-line"><span class="gray-italic">예: 가족의 사랑과 행복은 책임 있는 표현을 통해 깊어진다.</span></div>
+
+<div style="margin:12px 0 4px 0; font-size:9pt; font-weight:bold; color:#1a3a5c;">핵심 질문 (Overarching EQ) <span style="font-weight:normal;color:#666;font-size:8.5pt;">— 단원 전체를 이끄는 포괄적 열린 질문 1개</span></div>
+<div class="input-line"><span class="gray-italic">예: 가족에게 사랑을 표현하는 것이 왜 중요하며, 어떻게 할 수 있을까?</span></div>
+
+<div class="hint-box" style="margin-top:8px;">💡 ③ 중심 아이디어·핵심 질문은 단원의 '큰 그림'입니다. ④ 스트랜드의 하위 아이디어·안내 질문이 이를 구체화합니다. UbD의 Overarching EQ(③) → Topical EQ(④) 2층 구조와, 에릭슨의 Central Idea → Strand Generalizations 위계가 여기서 통합됩니다.</div>
+
+<div class="sub-header" style="margin-top:16px;">
+  <span class="sub-num num-s1">④</span>
+  <span class="sub-title">스트랜드별 하위 아이디어 + 안내 질문</span>
+</div>
+
+<table class="t-s1">
+  <thead>
+    <tr>
+      <th style="width:20%">스트랜드</th>
+      <th style="width:40%">하위 아이디어 (일반화)</th>
+      <th style="width:40%">안내 질문 (Guiding Questions)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="height:58px">
+      <td style="text-align:center;vertical-align:middle;font-weight:bold;color:#2E75B6;background:#f4f8fe;font-size:9pt;">스트랜드 1<br><span style="font-weight:normal;font-size:8pt;color:#666;">(개념 형성)</span></td>
+      <td></td><td></td>
+    </tr>
+    <tr style="height:58px">
+      <td style="text-align:center;vertical-align:middle;font-weight:bold;color:#2E75B6;background:#f4f8fe;font-size:9pt;">스트랜드 2<br><span style="font-weight:normal;font-size:8pt;color:#666;">(표현 확장)</span></td>
+      <td></td><td></td>
+    </tr>
+    <tr style="height:58px">
+      <td style="text-align:center;vertical-align:middle;font-weight:bold;color:#2E75B6;background:#f4f8fe;font-size:9pt;">스트랜드 3<br><span style="font-weight:normal;font-size:8pt;color:#666;">(행동 확장/전이)</span></td>
+      <td></td><td></td>
+    </tr>
+  </tbody>
+</table>
+<div class="hint-box">💡 각 스트랜드에 하위 일반화 1개 + 안내 질문(Topical EQ) 2~4개를 배치합니다. '개념 형성 → 표현 확장 → 행동 확장' 흐름을 참고하세요.</div>
+
+<div class="concept-info no-break">
+  <h4>📌 탐구 질문과 안내 질문의 구분</h4>
+  <span class="item-title">▸ 탐구 질문 (Essential Question)</span>
+  <span class="indent">단원 전체를 관통하는 열린 질문. 정해진 정답이 없으며, 반복적으로 재방문하며 이해를 심화한다. 위 ③의 '핵심 질문(Overarching EQ)'이 이에 해당.</span>
+  <span class="item-title" style="margin-top:8px;">▸ 안내 질문 (Guiding Questions) — 에릭슨의 3유형</span>
+  <span class="indent">① <b>사실 질문 (Factual)</b>: 누가, 무엇을, 언제, 어디서? — 구체적 사실·지식 확인 (정답 있음)</span>
+  <span class="indent">② <b>개념 질문 (Conceptual)</b>: 왜? 어떻게? — 개념 간 관계를 탐색하여 일반화에 도달 (심층 이해)</span>
+  <span class="indent">③ <b>논쟁/추론 질문 (Debatable)</b>: 과연 ~할까? — 가치 판단·전이를 유도하는 열린 질문 (다양한 답 가능)</span>
+</div>
+
+<!-- ======== 페이지 3 ======== -->
+<div class="page-break"></div>
+<div class="page-label">2단계</div>
+
+<div class="stage-header">
+  <div class="stage-badge badge-s2">2<br>단계</div>
+  <div class="stage-title s2">증거 결정</div>
+  <div class="stage-divider div-s2"></div>
+</div>
+
+<div class="sub-header">
+  <span class="sub-num num-s2">⑤</span>
+  <span class="sub-title">GRASPS 수행과제</span>
+</div>
+
+<table class="t-s2">
+  <thead>
+    <tr>
+      <th style="width:9%">요소</th>
+      <th style="width:22%">의미</th>
+      <th style="width:69%">내용</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="height:42px">
+      <td class="grasps-letter">G</td>
+      <td style="vertical-align:middle;">목표/도전 과제</td>
+      <td></td>
+    </tr>
+    <tr style="height:42px">
+      <td class="grasps-letter">R</td>
+      <td style="vertical-align:middle;">학생의 역할</td>
+      <td></td>
+    </tr>
+    <tr style="height:42px">
+      <td class="grasps-letter">A</td>
+      <td style="vertical-align:middle;">대상/청중</td>
+      <td></td>
+    </tr>
+    <tr style="height:42px">
+      <td class="grasps-letter">S</td>
+      <td style="vertical-align:middle;">실제적 맥락/상황</td>
+      <td></td>
+    </tr>
+    <tr style="height:42px">
+      <td class="grasps-letter">P</td>
+      <td style="vertical-align:middle;">산출물/수행</td>
+      <td></td>
+    </tr>
+    <tr style="height:42px">
+      <td class="grasps-letter">S</td>
+      <td style="vertical-align:middle;">평가 준거</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+<div class="hint-box">💡 수행과제는 핵심 아이디어의 이해를 '전이'하여 드러낼 수 있어야 합니다. 단순 암기로 해결되는 과제는 수행과제가 아닙니다.</div>
+
+<div class="sub-header" style="margin-top:16px;">
+  <span class="sub-num num-s2">⑥</span>
+  <span class="sub-title">루브릭</span>
+</div>
+
+<table class="t-s2">
+  <thead>
+    <tr>
+      <th style="width:34%">평가 요소</th>
+      <th style="width:22%">잘함 ★★★</th>
+      <th style="width:22%">보통 ★★</th>
+      <th style="width:22%">노력 요함 ★</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="rubric-td"><td></td><td></td><td></td><td></td></tr>
+    <tr class="rubric-td"><td></td><td></td><td></td><td></td></tr>
+    <tr class="rubric-td"><td></td><td></td><td></td><td></td></tr>
+  </tbody>
+</table>
+<div class="hint-box">💡 루브릭의 평가 요소는 수행과제의 준거(S)에서 도출합니다. 지식·이해(Know) / 과정·기능(Do) / 가치·태도(Be)를 고르게 반영하세요.</div>
+
+<!-- ======== 페이지 4 ======== -->
+<div class="page-break"></div>
+<div class="page-label">3단계</div>
+
+<div class="stage-header">
+  <div class="stage-badge badge-s3">3<br>단계</div>
+  <div class="stage-title s3">학습 경험 계획</div>
+  <div class="stage-divider div-s3"></div>
+</div>
+
+<div class="sub-header">
+  <span class="sub-num num-s3">⑦</span>
+  <span class="sub-title">단원 학습 흐름</span>
+</div>
+<p class="desc-text">스트랜드별 주요 활동과 안내 질문을 기록하세요. 행이 부족하면 추가합니다.</p>
+
+<table class="t-s3">
+  <thead>
+    <tr>
+      <th style="width:9%">차시</th>
+      <th style="width:21%">스트랜드<br>(주제명)</th>
+      <th style="width:33%">주요 활동</th>
+      <th style="width:25%">안내 질문</th>
+      <th style="width:12%">비고</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="flow-td"></td>
+      <td class="strand-center flow-td">스트랜드 1</td>
+      <td class="flow-td"></td>
+      <td class="flow-td"></td>
+      <td class="flow-td"></td>
+    </tr>
+    <tr>
+      <td class="flow-td"></td>
+      <td class="flow-td"></td>
+      <td class="flow-td"></td>
+      <td class="flow-td"></td>
+      <td class="flow-td"></td>
+    </tr>
+    <tr>
+      <td class="flow-td"></td>
+      <td class="strand-center flow-td">스트랜드 2</td>
+      <td class="flow-td"></td>
+      <td class="flow-td"></td>
+      <td class="flow-td"></td>
+    </tr>
+    <tr>
+      <td class="flow-td"></td>
+      <td class="flow-td"></td>
+      <td class="flow-td"></td>
+      <td class="flow-td"></td>
+      <td class="flow-td"></td>
+    </tr>
+    <tr>
+      <td class="flow-td"></td>
+      <td class="strand-center flow-td">스트랜드 3</td>
+      <td class="flow-td"></td>
+      <td class="flow-td"></td>
+      <td class="flow-td"></td>
+    </tr>
+    <tr>
+      <td class="flow-td"></td>
+      <td class="flow-td"></td>
+      <td class="flow-td"></td>
+      <td class="flow-td"></td>
+      <td class="flow-td"></td>
+    </tr>
+  </tbody>
+</table>
+<div class="hint-box">💡 일반화(개념 정리) → 전이(새로운 상황 적용)는 반드시 구분하세요. 수행과제는 '전이하기' 단계에 위치합니다.</div>
+
+<!-- ======== 페이지 5 ======== -->
+<div class="page-break"></div>
+<div class="page-label">3단계 계속</div>
+
+<div class="sub-header">
+  <span class="sub-num num-s3">⑧</span>
+  <span class="sub-title">WHERETO 자기 점검 (Wiggins &amp; McTighe)</span>
+</div>
+<p class="desc-text">학습 경험이 아래 7가지 요소를 충족하는지 점검하세요.</p>
+
+<table class="t-s3">
+  <thead>
+    <tr>
+      <th style="width:7%">요소</th>
+      <th style="width:22%">의미</th>
+      <th style="width:46%">점검 질문</th>
+      <th style="width:25%">☐ 메모</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="whereto-row">
+      <td class="whereto-letter">W</td>
+      <td><b>Where &amp; Why</b><br><span style="font-size:8pt;color:#888;">(방향과 이유)</span></td>
+      <td>학생이 단원의 방향·목표·평가 기준을 알고 있는가?<br>'왜 이것을 배우는가'를 이해하는가?</td>
+      <td></td>
+    </tr>
+    <tr class="whereto-row">
+      <td class="whereto-letter">H</td>
+      <td><b>Hook &amp; Hold</b><br><span style="font-size:8pt;color:#888;">(몰입 유도)</span></td>
+      <td>도입에서 학생의 흥미·호기심을 끌어내는 활동이 있는가?<br>학습 전반에 걸쳐 몰입이 유지되는가?</td>
+      <td></td>
+    </tr>
+    <tr class="whereto-row">
+      <td class="whereto-letter">E₁</td>
+      <td><b>Explore &amp; Experience</b><br><span style="font-size:8pt;color:#888;">(탐색·경험)</span></td>
+      <td>핵심 아이디어를 학생 스스로 탐구·경험할 기회가 있는가?</td>
+      <td></td>
+    </tr>
+    <tr class="whereto-row">
+      <td class="whereto-letter">R</td>
+      <td><b>Reflect, Rethink, Revise</b><br><span style="font-size:8pt;color:#888;">(성찰·재고·수정)</span></td>
+      <td>학생이 자신의 이해를 돌아보고 수정할 기회가 있는가?<br>오개념을 점검하고 재사고하는 활동이 포함되어 있는가?</td>
+      <td></td>
+    </tr>
+    <tr class="whereto-row">
+      <td class="whereto-letter">E₂</td>
+      <td><b>Evaluate</b><br><span style="font-size:8pt;color:#888;">(자기 평가)</span></td>
+      <td>학생이 자신의 학습 과정과 결과를 스스로 평가할 수 있는가?<br>형성 평가가 적절히 배치되어 있는가?</td>
+      <td></td>
+    </tr>
+    <tr class="whereto-row">
+      <td class="whereto-letter">T</td>
+      <td><b>Tailored</b><br><span style="font-size:8pt;color:#888;">(개별화)</span></td>
+      <td>학생의 개인차(흥미·수준·학습 양식)에 따라<br>활동이나 자료가 차별화되어 있는가?</td>
+      <td></td>
+    </tr>
+    <tr class="whereto-row">
+      <td class="whereto-letter">O</td>
+      <td><b>Organized</b><br><span style="font-size:8pt;color:#888;">(조직·배열)</span></td>
+      <td>학습 활동이 이해의 심화를 위해 최적의 순서로 배열되어 있는가?<br>(단순 시간순이 아닌 개념적 흐름 중심)</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+<div class="hint-box">💡 WHERETO는 위긴스와 맥타이의 '이해중심교육과정(UbD)' 3단계에서 학습 경험을 설계·점검하는 틀입니다. 각 요소가 단원 내 어느 차시에서 구현되는지 확인해 보세요.</div>
+
+<div class="sub-header" style="margin-top:20px;">
+  <span class="sub-num" style="background:#555;">✎</span>
+  <span class="sub-title">사후 팀 성찰 (KPT)</span>
+</div>
+
+<table class="t-kpt">
+  <thead>
+    <tr>
+      <th style="width:33%;">✅ Keep<br><span style="font-weight:normal;font-size:8pt;">잘 된 점</span></th>
+      <th style="width:34%;">⚠️ Problem<br><span style="font-weight:normal;font-size:8pt;">보완할 점</span></th>
+      <th style="width:33%;">🚀 Try<br><span style="font-weight:normal;font-size:8pt;">다음 시도</span></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td style="height:100px;"></td><td style="height:100px;"></td><td style="height:100px;"></td></tr>
+  </tbody>
+</table>
+
+<!-- ======== 푸터 ======== -->
+<div class="footer-bar">
+  <span class="left">룰루랄라 한기쌤</span>
+  <span class="right">개념기반수업설계 AI로 날개를 달다</span>
+</div>
+
+</body>
+</html>
