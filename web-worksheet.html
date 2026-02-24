@@ -650,9 +650,13 @@
     vertical-align: middle;
     font-weight: 700;
     color: var(--brown);
-    background: #fef8f0;
+    background: transparent;
     font-size: 9pt;
     padding: 8px !important;
+    transition: background 0.3s ease;
+  }
+  .strand-label.has-value {
+    background: #fef8f0;
   }
   .strand-label textarea {
     text-align: center;
@@ -2086,6 +2090,7 @@ const TABLE_CONFIG = {
       taName.placeholder = `스트랜드 ${num}`;
       taName.dataset.field = `strand-name-${uid()}`;
       taName.style.cssText = 'text-align:center;font-weight:700;color:#B87333;min-height:60px;';
+      taName.addEventListener('input', function() { updateStrandBg(tdName); });
       tdName.appendChild(taName);
       tr.appendChild(tdName);
 
@@ -2145,6 +2150,11 @@ const TABLE_CONFIG = {
         ta.placeholder = f.placeholder;
         ta.dataset.field = `${f.prefix}-${uid()}`;
         ta.style.cssText = f.style;
+        if (f.prefix === 'flow-strand') {
+          td.className = 'strand-label';
+          ta.style.cssText = 'text-align:center;font-weight:700;color:#B87333;min-height:56px;';
+          ta.addEventListener('input', function() { updateStrandBg(td); });
+        }
         td.appendChild(ta);
         tr.appendChild(td);
       });
@@ -2356,11 +2366,26 @@ addFlowRow = function() {
   }
 };
 
+// ===== Strand label: 입력 시 배경색 활성화 =====
+function updateStrandBg(td) {
+  const ta = td.querySelector('textarea');
+  if (!ta) return;
+  td.classList.toggle('has-value', ta.value.trim().length > 0);
+}
+function initStrandBg() {
+  document.querySelectorAll('.strand-label').forEach(function(td) {
+    updateStrandBg(td);
+    const ta = td.querySelector('textarea');
+    if (ta) ta.addEventListener('input', function() { updateStrandBg(td); });
+  });
+}
+
 // ===== Init =====
 window.addEventListener('DOMContentLoaded', () => {
   loadData();
   initAutoGrow();
   initRowActions();
+  initStrandBg();
 });
 </script>
 
