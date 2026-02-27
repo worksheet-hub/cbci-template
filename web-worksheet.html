@@ -813,6 +813,7 @@
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     margin: 8px 0;
+    padding-right: 36px; /* room for row-actions buttons (32px + 4px buffer) */
   }
   .table-scroll table {
     margin: 0;
@@ -1814,7 +1815,10 @@ document.addEventListener('input', function(e) {
 function initAutoGrow() {
   document.querySelectorAll('textarea').forEach(el => {
     autoGrow(el);
-    el.addEventListener('focus', () => autoGrow(el));
+    if (!el.dataset.agInit) {
+      el.dataset.agInit = '1';
+      el.addEventListener('focus', () => autoGrow(el));
+    }
   });
 }
 
@@ -1849,7 +1853,6 @@ function showToast(msg, duration = 2500) {
 // ===== Add Generic Row =====
 function addRow(tbodyId, prefixes, colCount) {
   const tbody = document.getElementById(tbodyId);
-  const rowNum = tbody.rows.length + 1;
   const tr = document.createElement('tr');
 
   for (let i = 0; i < colCount; i++) {
@@ -1859,7 +1862,7 @@ function addRow(tbodyId, prefixes, colCount) {
     }
     const ta = document.createElement('textarea');
     ta.className = 'autogrow';
-    ta.dataset.field = `${prefixes[i]}-${rowNum}`;
+    ta.dataset.field = `${prefixes[i]}-${uid()}`;
     ta.placeholder = '';
     if (i === colCount - 1 && tbodyId === 'basicInfoBody') {
       ta.style.textAlign = 'center';
@@ -1884,7 +1887,7 @@ function addStrandRow() {
   const taName = document.createElement('textarea');
   taName.className = 'autogrow';
   taName.placeholder = `스트랜드 ${num}`;
-  taName.dataset.field = `strand-name-${num}`;
+  taName.dataset.field = `strand-name-${uid()}`;
   taName.style.cssText = 'text-align:center;font-weight:700;color:#B87333;min-height:60px;';
   tdName.appendChild(taName);
   tr.appendChild(tdName);
@@ -1893,7 +1896,7 @@ function addStrandRow() {
   const taIdea = document.createElement('textarea');
   taIdea.className = 'autogrow';
   taIdea.placeholder = '하위 아이디어(일반화) 입력';
-  taIdea.dataset.field = `strand-idea-${num}`;
+  taIdea.dataset.field = `strand-idea-${uid()}`;
   taIdea.style.minHeight = '60px';
   tdIdea.appendChild(taIdea);
   tr.appendChild(tdIdea);
@@ -1902,7 +1905,7 @@ function addStrandRow() {
   const taQ = document.createElement('textarea');
   taQ.className = 'autogrow';
   taQ.placeholder = '안내 질문 2~4개 입력';
-  taQ.dataset.field = `strand-q-${num}`;
+  taQ.dataset.field = `strand-q-${uid()}`;
   taQ.style.minHeight = '60px';
   tdQ.appendChild(taQ);
   tr.appendChild(tdQ);
@@ -1931,7 +1934,7 @@ function addFlowRow() {
     const ta = document.createElement('textarea');
     ta.className = 'autogrow';
     ta.placeholder = f.placeholder;
-    ta.dataset.field = `${f.prefix}-${num}`;
+    ta.dataset.field = `${f.prefix}-${uid()}`;
     ta.style.cssText = f.style;
     td.appendChild(ta);
     tr.appendChild(td);
@@ -1963,6 +1966,17 @@ function saveData() {
   document.querySelectorAll('input[type="checkbox"][data-field]').forEach(el => {
     data[el.dataset.field] = el.checked;
   });
+  // Save row structure (number of rows per dynamic table)
+  const rowStructure = {};
+  ['basicInfoBody', 'curriculumBody', 'strandBody', 'rubricBody', 'flowBody'].forEach(id => {
+    const tbody = document.getElementById(id);
+    if (tbody) {
+      rowStructure[id] = Array.from(tbody.rows).map(tr => {
+        return Array.from(tr.querySelectorAll('textarea[data-field]')).map(ta => ta.dataset.field);
+      });
+    }
+  });
+  data.__rowStructure__ = rowStructure;
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     document.getElementById('saveIcon').textContent = '✅';
@@ -1979,6 +1993,40 @@ function loadData() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return;
     const data = JSON.parse(raw);
+
+    // Restore row structure first (recreate dynamically added rows)
+    const rowStructure = data.__rowStructure__;
+    if (rowStructure) {
+      ['basicInfoBody', 'curriculumBody', 'strandBody', 'rubricBody', 'flowBody'].forEach(tbodyId => {
+        const tbody = document.getElementById(tbodyId);
+        const savedRows = rowStructure[tbodyId];
+        const config = typeof TABLE_CONFIG !== 'undefined' ? TABLE_CONFIG[tbodyId] : null;
+        if (!tbody || !savedRows || !config) return;
+
+        // Current rows already in HTML
+        const existingCount = tbody.rows.length;
+
+        // Add missing rows
+        for (let i = existingCount; i < savedRows.length; i++) {
+          const newTr = config.create(i + 1);
+          tbody.appendChild(newTr);
+        }
+
+        // Remap data-field attributes to match saved structure
+        Array.from(tbody.rows).forEach((tr, rowIdx) => {
+          if (!savedRows[rowIdx]) return;
+          const textareas = tr.querySelectorAll('textarea[data-field]');
+          savedRows[rowIdx].forEach((savedField, colIdx) => {
+            if (textareas[colIdx]) {
+              textareas[colIdx].dataset.field = savedField;
+            }
+          });
+        });
+      });
+    }
+    delete data.__rowStructure__;
+
+    // Restore field values
     Object.entries(data).forEach(([field, value]) => {
       const el = document.querySelector(`textarea[data-field="${field}"]`);
       if (el) {
@@ -2056,7 +2104,7 @@ function downloadHTML() {
     cb.parentNode.replaceChild(span, cb);
   });
 
-  const html = '<!DOCTYPE html>\n<html lang="ko">\n' + clone.outerHTML + '\n</html>';
+  const html = '<!DOCTYPE html>\n' + clone.outerHTML;
 
   const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
   const url = URL.createObjectURL(blob);
