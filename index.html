@@ -14,7 +14,6 @@
     .page-break { page-break-before: always; }
     .no-break { page-break-inside: avoid; }
     body { font-size: 9.5pt; background: #fff !important; }
-    .hint-box, .ai-tip, .concept-info { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .stage-badge { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .sub-num { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     thead { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -256,57 +255,6 @@
     margin-right: 4px;
   }
 
-  /* ===== 안내 박스 ===== */
-  .hint-box {
-    background: #f0f5fc;
-    border-left: 3.5px solid #2E75B6;
-    border-radius: 0 5px 5px 0;
-    padding: 7px 12px;
-    font-size: 8.5pt;
-    color: #3a4a6a;
-    margin: 6px 0 4px 0;
-  }
-  .ai-tip {
-    background: #fffbec;
-    border-left: 3.5px solid #e0a800;
-    border-radius: 0 5px 5px 0;
-    padding: 7px 12px;
-    font-size: 8.5pt;
-    color: #5a4800;
-    font-style: italic;
-    margin: 4px 0 8px 0;
-  }
-  .ai-tip b { color: #7a5f00; font-style: normal; }
-
-  /* ===== 개념 정보 박스 ===== */
-  .concept-info {
-    background: #f5f8fd;
-    border: 1px solid #c8d8ee;
-    border-radius: 6px;
-    padding: 10px 14px;
-    margin: 8px 0;
-    font-size: 8.5pt;
-  }
-  .concept-info h4 {
-    color: #2E75B6;
-    font-size: 9.5pt;
-    margin-bottom: 7px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-  .concept-info .item-title {
-    font-weight: bold;
-    color: #333;
-    margin-top: 6px;
-    display: block;
-  }
-  .concept-info .indent {
-    padding-left: 14px;
-    color: #444;
-    margin: 2px 0;
-    display: block;
-  }
 
   /* ===== 페이지 표시 ===== */
   .page-label {
@@ -315,14 +263,6 @@
     color: #bbb;
     margin-bottom: 4px;
     font-style: italic;
-  }
-
-  /* ===== 안내문 ===== */
-  .desc-text {
-    font-size: 8.5pt;
-    color: #666;
-    font-style: italic;
-    margin: 4px 0 8px 4px;
   }
 
   /* ===== 개념 렌즈 표 ===== */
@@ -443,8 +383,6 @@
   </div>
 </div>
 
-<div class="hint-box">💡 성취기준 코드란? [4도02-01] = 4학년, 도덕, 02번째 영역, 01번 기준. 융합 프로젝트는 2개 이상 교과의 성취기준을 함께 씁니다.</div>
-<div class="ai-tip"><b>🤖 NotebookLM</b>&nbsp; 교육과정 문서를 업로드한 뒤, '초3 가족에 관한 도덕과 성취기준 찾아줘'처럼 질문하면 관련 성취기준을 빠르게 검색할 수 있습니다.</div>
 
 <!-- ======== 1단계 ======== -->
 <div class="stage-header">
@@ -457,7 +395,6 @@
   <span class="sub-num num-s1">①</span>
   <span class="sub-title">교육과정 분석 (교과별)</span>
 </div>
-<p class="desc-text">각 참여 교과의 핵심 아이디어(영역 수준, 국가 교육과정 내용 체계표 원문)와 내용요소를 교과별로 분해합니다.</p>
 
 <table class="t-s1">
   <thead>
@@ -481,8 +418,6 @@
     <tr style="height:58px"><td></td><td></td><td></td><td></td><td></td></tr>
   </tbody>
 </table>
-<div class="hint-box">💡 융합 프로젝트에서는 교과마다 핵심 아이디어와 내용요소가 다릅니다. 각 교과의 내용 체계표에서 해당 영역의 핵심 아이디어를 찾아 교과별로 기록하세요.</div>
-<div class="ai-tip"><b>🤖 NotebookLM</b>&nbsp; '도덕 4학년 자기 존중 영역의 핵심 아이디어와 내용요소를 정리해줘'라고 교과별로 질문하면 한눈에 확인할 수 있습니다.</div>
 
 <!-- ======== 페이지 2 ======== -->
 <div class="page-break"></div>
@@ -505,8 +440,6 @@
     </tr>
   </tbody>
 </table>
-<div class="hint-box">💡 개념의 위계: 매크로 개념(개념적 렌즈, 가장 추상적 — 대구 8대 또는 IB 7개에서 선택) → 마이크로 개념(교과별 하위 개념, 구체적)</div>
-<div class="ai-tip"><b>🤖 NotebookLM</b>&nbsp; '이 성취기준들을 관통하는 상위 개념은 무엇일까?'라고 질문하면 매크로 개념(렌즈) 후보를 제안받을 수 있습니다.</div>
 
 <div class="sub-header" style="margin-top:16px;">
   <span class="sub-num num-s1">③</span>
@@ -519,7 +452,6 @@
 <div style="margin:12px 0 4px 0; font-size:9pt; font-weight:bold; color:#1a3a5c;">핵심 질문 (Overarching EQ) <span style="font-weight:normal;color:#666;font-size:8.5pt;">— 단원 전체를 이끄는 포괄적 열린 질문 1개</span></div>
 <div class="input-line"><span class="gray-italic">예: 가족에게 사랑을 표현하는 것이 왜 중요하며, 어떻게 할 수 있을까?</span></div>
 
-<div class="hint-box" style="margin-top:8px;">💡 ③ 단원 핵심아이디어·핵심 질문은 단원의 '큰 그림'입니다. ④ 스트랜드의 하위 아이디어·안내 질문이 이를 구체화합니다. UbD의 Overarching EQ(③) → Topical EQ(④) 2층 구조와, 에릭슨의 Central Idea → Strand Generalizations 위계가 여기서 통합됩니다.</div>
 
 <div class="sub-header" style="margin-top:16px;">
   <span class="sub-num num-s1">④</span>
@@ -549,32 +481,6 @@
     </tr>
   </tbody>
 </table>
-<div class="hint-box">💡 단원당 일반화는 3개 이상 작성합니다. 각 스트랜드에 하위 일반화 1개 + 안내 질문(Topical EQ) 2~4개를 배치합니다. '개념 형성 → 표현 확장 → 행동 확장' 흐름을 참고하세요.</div>
-
-<div class="concept-info no-break">
-  <h4>📌 일반화 문장 작성 원리</h4>
-  <span class="item-title">▸ 구조: 개념 + 강한 동사 + 개념</span>
-  <span class="indent">2개 이상의 개념을 관계 설명의 힘이 큰 동사로 연결한다.</span>
-  <span class="item-title" style="margin-top:8px;">▸ 작성 규칙</span>
-  <span class="indent">• 현재 시제로 작성하며, 시공을 초월해 전이 가능해야 한다.</span>
-  <span class="indent">• 고유명사, 과거 시제를 사용하지 않는다.</span>
-  <span class="indent">• 약한 동사(~이다, 갖다, 영향을 미치다)를 피하고 강한 동사를 사용한다.</span>
-  <span class="item-title" style="margin-top:8px;">▸ 강한 동사 예시</span>
-  <span class="indent">촉진하다, 감소시키다, 증가시키다, 향상시키다, 초래하다, 밝히다, 변형시키다, 확대하다</span>
-  <span class="item-title" style="margin-top:8px;">▸ 심화 방법</span>
-  <span class="indent">How?(어떻게) → Why?(왜) → So what?(그래서) 질문으로 일반화의 수준을 높인다.</span>
-</div>
-
-<div class="concept-info no-break">
-  <h4>📌 핵심 질문과 안내 질문의 구분 — 에릭슨의 개념기반 질문 체계</h4>
-  <span class="item-title">▸ 핵심 질문 (Essential Question)</span>
-  <span class="indent">단원 전체의 방향을 설정하는 거시적 질문. 시공을 초월해 사고와 탐구를 자극하며, 영속적 이해(일반화)에 도달하도록 유도한다.</span>
-  <span class="item-title" style="margin-top:8px;">▸ 안내 질문 (Guiding Questions) — 에릭슨의 3유형</span>
-  <span class="indent">각 일반화별로 사실·개념·논쟁 질문을 조합하여 3~5개를 배치한다.</span>
-  <span class="indent">① <b>사실 질문 (Factual)</b>: 누가, 무엇을, 언제, 어디서? — 정답이 있는 질문으로 개념 이해에 필요한 구체적 사실·지식을 확인한다.</span>
-  <span class="indent">② <b>개념 질문 (Conceptual)</b>: 왜? 어떻게? — 정답이 정해져 있지 않으며, 사실을 넘어 개념 간 관계를 탐색하여 일반화(전이 가능한 이해)에 도달하게 한다.</span>
-  <span class="indent">③ <b>논쟁/추론 질문 (Debatable)</b>: 과연 ~할까? — 다양한 답이 가능한 열린 질문으로, 학습한 개념을 바탕으로 가치 판단과 새로운 상황으로의 전이를 유도한다.</span>
-</div>
 
 <!-- ======== 페이지 3 ======== -->
 <div class="page-break"></div>
@@ -632,7 +538,6 @@
     </tr>
   </tbody>
 </table>
-<div class="hint-box">💡 수행과제는 핵심 아이디어의 이해를 '전이'하여 드러낼 수 있어야 합니다. 단순 암기로 해결되는 과제는 수행과제가 아닙니다.</div>
 
 <div class="sub-header" style="margin-top:16px;">
   <span class="sub-num num-s2">⑥</span>
@@ -654,7 +559,6 @@
     <tr class="rubric-td"><td></td><td></td><td></td><td></td></tr>
   </tbody>
 </table>
-<div class="hint-box">💡 루브릭의 평가 요소는 수행과제의 준거(S)에서 도출합니다. 지식·이해(Know) / 과정·기능(Do) / 가치·태도(Be)를 고르게 반영하세요.</div>
 
 <!-- ======== 페이지 4 ======== -->
 <div class="page-break"></div>
@@ -670,7 +574,6 @@
   <span class="sub-num num-s3">⑦</span>
   <span class="sub-title">단원 학습 흐름</span>
 </div>
-<p class="desc-text">스트랜드별 주요 활동과 자료 및 사고전략을 기록하세요. 행이 부족하면 추가합니다.</p>
 
 <table class="t-s3">
   <thead>
@@ -727,7 +630,6 @@
     </tr>
   </tbody>
 </table>
-<div class="hint-box">💡 일반화(개념 정리) → 전이(새로운 상황 적용)는 반드시 구분하세요. 수행과제는 '전이하기' 단계에 위치합니다.</div>
 
 <!-- ======== 페이지 5 ======== -->
 <div class="page-break"></div>
@@ -737,7 +639,6 @@
   <span class="sub-num num-s3">⑧</span>
   <span class="sub-title">WHERETO 자기 점검 (Wiggins &amp; McTighe)</span>
 </div>
-<p class="desc-text">학습 경험이 아래 7가지 요소를 충족하는지 점검하세요.</p>
 
 <table class="t-s3">
   <thead>
@@ -793,14 +694,12 @@
     </tr>
   </tbody>
 </table>
-<div class="hint-box">💡 WHERETO는 위긴스와 맥타이의 '이해중심교육과정(UbD)' 3단계에서 학습 경험을 설계·점검하는 틀입니다. 각 요소가 단원 내 어느 차시에서 구현되는지 확인해 보세요.</div>
 
 <!-- ===== ⑨ 개념기반 단원 설계 자기 점검 ===== -->
 <div class="sub-header" style="margin-top:20px;">
   <span class="sub-num num-s3">⑨</span>
   <span class="sub-title">개념기반 단원 설계 자기 점검 (Erickson &amp; Lanning)</span>
 </div>
-<p class="desc-text">단원 설계의 각 요소가 개념기반 탐구의 원칙에 부합하는지 점검하세요.</p>
 
 <table class="t-s3">
   <thead>
@@ -878,7 +777,6 @@
     </tr>
   </tbody>
 </table>
-<div class="hint-box">💡 에릭슨과 래닝의 개념기반 단원 설계 9단계 기반 점검표입니다. 일반화에 고유명사나 과거시제가 포함되면 전이 가능성이 떨어집니다.</div>
 
 <div class="sub-header" style="margin-top:20px;">
   <span class="sub-num" style="background:#555;">✎</span>
