@@ -1790,7 +1790,7 @@
       <tr>
         <th style="width:14%">설계 요소</th>
         <th style="width:50%">점검 항목</th>
-        <th style="width:6%">☐</th>
+        <th style="width:6%"><input type="checkbox" id="cbciCheckAll" title="전체 선택/해제" style="width:18px;height:18px;accent-color:var(--brown);cursor:pointer;"></th>
         <th style="width:30%">메모</th>
       </tr>
     </thead>
@@ -1920,6 +1920,12 @@ document.addEventListener('input', function(e) {
 });
 document.addEventListener('change', function(e) {
   if (e.target.type === 'checkbox') scheduleSave();
+});
+document.getElementById('cbciCheckAll').addEventListener('change', function() {
+  document.querySelectorAll('input[data-field^="cbci-ck-"]').forEach(cb => {
+    if (cb.type === 'checkbox') cb.checked = this.checked;
+  });
+  scheduleSave();
 });
 
 // Initialize all textareas
