@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>개념 기반 탐구 프로젝트 설계 웹학습지</title>
 <style>
+  html { scroll-behavior: smooth; }
   /* ===== CSS Variables ===== */
   :root {
     --blue: #2E75B6;
@@ -184,6 +185,7 @@
     font-size: 8.5pt;
     font-weight: 700;
     letter-spacing: 0.2px;
+    cursor: pointer;
   }
   .pill-s1 { background: var(--blue); color: #fff; }
   .pill-s2 { background: var(--green); color: #fff; }
@@ -1127,11 +1129,11 @@
     <div class="subtitle-row">
       <span>백워드 설계 3단계</span>
       <span class="arrow-sep">:</span>
-      <span class="stage-pill pill-s1">1단계 바라는 결과</span>
+      <a href="#stage1" class="stage-pill pill-s1" style="text-decoration:none;color:inherit;">1단계 바라는 결과</a>
       <span class="arrow-sep">→</span>
-      <span class="stage-pill pill-s2">2단계 증거 결정</span>
+      <a href="#stage2" class="stage-pill pill-s2" style="text-decoration:none;color:inherit;">2단계 증거 결정</a>
       <span class="arrow-sep">→</span>
-      <span class="stage-pill pill-s3">3단계 학습 경험</span>
+      <a href="#stage3" class="stage-pill pill-s3" style="text-decoration:none;color:inherit;">3단계 학습 경험</a>
     </div>
   </div>
 
@@ -1396,7 +1398,7 @@
   <div class="ai-tip"><span><b>🤖 NotebookLM</b>&nbsp; 교육과정 문서를 업로드하면 아래와 같은 질문으로 활용할 수 있습니다.<br>• '초3 가족에 관한 도덕과 성취기준 찾아줘'<br>• '도덕 4학년 자기 존중 영역의 핵심 아이디어와 내용요소를 정리해줘'<br>• '이 성취기준들을 관통하는 상위 개념은 무엇일까?'</span><a class="nlm-link" href="https://notebooklm.google.com/notebook/bd163358-a9d5-45f2-8007-5eacab2f2dd4" target="_blank" rel="noopener">📒 NotebookLM 열기</a></div>
 
   <!-- ===== Stage 1 ===== -->
-  <div class="stage-header">
+  <div class="stage-header" id="stage1">
     <div class="stage-badge badge-s1">1<br>단계</div>
     <div class="stage-title s1">바라는 결과 확인</div>
     <div class="stage-divider div-s1"></div>
@@ -1538,7 +1540,7 @@
   <div class="page-break"></div>
   <div class="page-label">2단계</div>
 
-  <div class="stage-header">
+  <div class="stage-header" id="stage2">
     <div class="stage-badge badge-s2">2<br>단계</div>
     <div class="stage-title s2">증거 결정</div>
     <div class="stage-divider div-s2"></div>
@@ -1638,7 +1640,7 @@
   <div class="page-break"></div>
   <div class="page-label">3단계</div>
 
-  <div class="stage-header">
+  <div class="stage-header" id="stage3">
     <div class="stage-badge badge-s3">3<br>단계</div>
     <div class="stage-title s3">학습 경험 계획</div>
     <div class="stage-divider div-s3"></div>
